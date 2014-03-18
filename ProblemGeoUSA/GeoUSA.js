@@ -96,31 +96,27 @@ var updateDetailVis = function(data, name){
 
 function clicked(d) {
 	var centroid = path.centroid(d);
-	console.log("clicked");
-	console.log(centroid);
-	
-	
-  if (d && centered !== d) {
-    var centroid = path.centroid(d);
-    x = centroid[0];
-    y = centroid[1];
-    k = 4;
-    centered = d;
-  } else {
-    x = width / 2;
-    y = height / 2;
-    k = 1;
-    centered = null;
-  }
+	//If the map wasn't already centered on the area clicked, it centers it
+	if (d && centered !== d) {
+		var centroid = path.centroid(d);
+    	x = centroid[0];
+    	y = centroid[1];
+    	k = 4; //this controls how much it zooms
+    	centered = d;
+  	} else {
+    	x = width / 2;
+    	y = height / 2;
+    	k = 1;
+    	centered = null;
+  	}
 
-  svg.selectAll("path")
-      .classed("active", centered && function(d) { return d === centered; });
-
-  svg.transition()
-      .duration(750)
-      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-      .style("stroke-width", 1.5 / k + "px");
+  	svg.selectAll("path")
+		.classed("active", centered && function(d) { return d === centered; });
 	
+	svg.transition()
+		.duration(750)
+		.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+		.style("stroke-width", 1.5 / k + "px");	
 }
 
 
