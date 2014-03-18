@@ -40,7 +40,14 @@ var path = d3.geo.path().projection(projection);
 
 var dataSet = {};
 
+var lon= -71.06;
+var lat= 42.36;
 
+var screencoord = projection([lon, lat]);
+svg.append("circle")
+	.attr("cx", screencoord[0])
+	.attr("cy", screencoord[1])
+	.attr("r", 5);
 
 function loadStations() {
     d3.csv("../data/NSRDB_StationsMeta.csv",function(error,data){
@@ -67,7 +74,7 @@ d3.json("../data/us-named.json", function(error, data) {
     var usMap = topojson.feature(data,data.objects.states).features
     console.log(usMap);
 
-    //svg.selectAll(".country").data(usMap).enter().... 
+    svg.selectAll(".country").data(usMap).enter().append("path").attr("class", "country").attr("d", path);
     // see also: http://bl.ocks.org/mbostock/4122298
 
     loadStats();
