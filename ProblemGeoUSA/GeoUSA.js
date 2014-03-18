@@ -11,6 +11,7 @@ var margin = {
 
 var width = 1060 - margin.left - margin.right;
 var height = 800 - margin.bottom - margin.top;
+var centered;
 
 var bbVis = {
     x: 100,
@@ -44,6 +45,7 @@ var lon= -71.06;
 var lat= 42.36;
 
 var screencoord = projection([lon, lat]);
+
 svg.append("circle")
 	.attr("cx", screencoord[0])
 	.attr("cy", screencoord[1])
@@ -74,7 +76,7 @@ d3.json("../data/us-named.json", function(error, data) {
     var usMap = topojson.feature(data,data.objects.states).features
     console.log(usMap);
 
-    svg.selectAll(".country").data(usMap).enter().append("path").attr("class", "country").attr("d", path);
+    svg.selectAll(".country").data(usMap).enter().append("path").attr("class", "country").attr("d", path).on("click", clicked);
     // see also: http://bl.ocks.org/mbostock/4122298
 
     loadStats();
@@ -90,6 +92,35 @@ var createDetailVis = function(){
 
 var updateDetailVis = function(data, name){
   
+}
+
+function clicked(d) {
+	var centroid = path.centroid(d);
+	console.log("clicked");
+	console.log(centroid);
+	
+	
+  if (d && centered !== d) {
+    var centroid = path.centroid(d);
+    x = centroid[0];
+    y = centroid[1];
+    k = 4;
+    centered = d;
+  } else {
+    x = width / 2;
+    y = height / 2;
+    k = 1;
+    centered = null;
+  }
+
+  svg.selectAll("path")
+      .classed("active", centered && function(d) { return d === centered; });
+
+  svg.transition()
+      .duration(750)
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+      .style("stroke-width", 1.5 / k + "px");
+	
 }
 
 
