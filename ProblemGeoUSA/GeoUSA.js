@@ -162,6 +162,7 @@ function loadStations() {
 					//get max number for range
 					var rMax=0;
 					var tKeys;
+					var station;
 					keys.forEach(function(e, j){
         			
         			if(completeDataSet[e].length>=1){
@@ -169,11 +170,12 @@ function loadStations() {
         				tKeys = Object.keys(completeDataSet[e][0].hourly);
         				
         				if(d["USAF"] == completeDataSet[e][0].id){
-        				console.log(completeDataSet[e][0].hourly);
-        					var k = completeDataSet[e][0].hourly;
+        					//console.log(completeDataSet[e][0].hourly);
+        					station = completeDataSet[e][0].hourly;
         					//console.log(k);
         					tKeys.forEach(function(j, k){
-        						console.log(completeDataSet[e][0].hourly[j]);
+        						//console.log(completeDataSet[e][0].hourly[j]);
+        						
         						if(completeDataSet[e][0].hourly[j] >= rMax){
         							rMax = completeDataSet[e][0].hourly[j];
         						}
@@ -185,7 +187,7 @@ function loadStations() {
         			
         			}
        			 });
-					console.log(rMax);
+					//console.log(rMax);
 					
 					//yScale
 					var yScale = d3.scale.linear().domain([rMax, 0]).range([50, 180]);
@@ -222,6 +224,27 @@ function loadStations() {
 						.attr("transform", function(d) {
 							return "rotate(-80)translate(-40, -11)";
 						});
+						
+					//Draw Bars
+					detailVis.selectAll(".bar")
+						.data(station)
+						.enter().append("rect")
+						/*.attr("x", "10")
+						.attr("y", function(d) { 
+							if(Number.isNaN(d.pop)){
+								return graphH-30;
+							}else{
+								return yScale(d.pop); 
+							}
+						})
+						.attr("height", function(d) { 
+							if(Number.isNaN(d.pop)){
+								return 0;
+							}else{
+								return (graphH-30)- yScaleT(d.pop); 
+							}
+						})
+						.attr("width", (graphW-240) / list.values.length - barPadding)*/
 				});
 			}
         
