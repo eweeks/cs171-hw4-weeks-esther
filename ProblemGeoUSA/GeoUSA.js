@@ -80,8 +80,8 @@ function loadStations() {
         				//console.log(completeDataSet[e][0].sum);
         				
         				if(d["USAF"] == completeDataSet[e][0].id){
-        					console.log("match");
-        					console.log(completeDataSet[e][0].id);
+        					//console.log("match");
+        					//console.log(completeDataSet[e][0].id);
         					var s = parseInt(completeDataSet[e][0].sum);
         					d.sum = s;
         				}
@@ -95,15 +95,30 @@ function loadStations() {
         		//scale for station sizes
 				var sScale = d3.scale.linear()
 					.domain([ 0, max])
-					.range([1, 3]);
+					.range([1, 4]);
         		
         		svg
 					.append("circle")
 					.attr("class", "stations")
 					.attr("cx", screen[0])
 					.attr("cy", screen[1])
-					.attr("r", function(d, i){
-						return 2;
+					.attr("r", function(e, i){
+						//if object has a sum, use that, else use zero
+						if("sum" in d){
+							var r = d.sum;
+						}else{
+							var r =0;
+						}
+						return sScale(r);
+					})
+					.attr("fill", function(e, i){
+						//if object has a sum, use that, else use zero
+						if("sum" in d){
+							return "blue";
+						}
+						return "grey";
+						
+						
 					})
 					.on("mouseover", function(e) {
 						//console.log(e);
@@ -113,19 +128,28 @@ function loadStations() {
 						var yPosition = parseFloat(e.y) ;*/
 						//Update the tooltip position and value
 					d3.select("#tooltip")
-						//.style("left", xPosition + "px")
-						//.style("top", yPosition + "px")
+						.style("left", (event.pageX-10)+"px")
+						.style("top", (event.pageY+10)+"px")
 						.select("#station")
 						.text(d.STATION);
 
 					d3.select("#value")
-						.text(d.USAF);
+						.text(d.sum);
 					
 					//Show the tooltip
 					d3.select("#tooltip").classed("hidden", false);
 				})
 				.on("mouseout", function(e){
-					d3.select(this).attr("fill", "black");
+					d3.select(this)
+					.attr("fill", function(e, i){
+						//if object has a sum, use that, else use zero
+						if("sum" in d){
+							return "blue";
+						}
+						return "grey";
+						
+						
+					})
 					//Hide the tooltip
 					d3.select("#tooltip").classed("hidden", true);
 				});
