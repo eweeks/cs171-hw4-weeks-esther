@@ -40,8 +40,14 @@ var path = d3.geo.path().projection(projection);
 
 
 var dataSet = {};
+var completeDataSet;
+var max=0;
+var keys;
 
-var lon= -71.06;
+//Show the tooltip
+//d3.select("#tooltip").classed("hidden", false);
+
+/*var lon= -71.06;
 var lat= 42.36;
 
 var screencoord = projection([lon, lat]);
@@ -49,24 +55,112 @@ var screencoord = projection([lon, lat]);
 svg.append("circle")
 	.attr("cx", screencoord[0])
 	.attr("cy", screencoord[1])
-	.attr("r", 5);
+	.attr("r", 5);*/
 
 function loadStations() {
     d3.csv("../data/NSRDB_StationsMeta.csv",function(error,data){
-        //....
+       // console.log(data);
+        data.forEach(function(d, i){
+        	//console.log(d["ST"]);
+        	lo= d["NSRDB_LON(dd)"];
+			la= d["NSRDB_LAT (dd)"];
+        	
+        	var screen = projection([lo, la]);
+        	if(d["ST"] !== "PR" && d["ST"] !== "GU" && d["ST"] !== "VI" && d["STATION"] !=="MIDWAY ISLAND NAS") {
+        		//console.log(d["ST"]);
+        		/*completeDataSet.map(function(e){
+        			if(d["USAF"] == e.id){
+        				d["test"]="something";
+        			}
+        		})*/
+        		
+        		keys.forEach(function(e, j){
+        			
+        			if(completeDataSet[e].length>=1){
+        				//console.log(completeDataSet[e][0].sum);
+        				
+        				if(d["USAF"] == completeDataSet[e][0].id){
+        					console.log("match");
+        					console.log(completeDataSet[e][0].id);
+        					var s = parseInt(completeDataSet[e][0].sum);
+        					d.sum = s;
+        				}
+        			//d.push({"Sum":completeDataSet[e][0].sum });
+        			}
+       			 });
+        		
+        		
+        		
+        		
+        		//scale for station sizes
+				var sScale = d3.scale.linear()
+					.domain([ 0, max])
+					.range([1, 3]);
+        		
+        		svg
+					.append("circle")
+					.attr("class", "stations")
+					.attr("cx", screen[0])
+					.attr("cy", screen[1])
+					.attr("r", function(d, i){
+						return 2;
+					})
+					.on("mouseover", function(e) {
+						//console.log(e);
+						d3.select(this).attr("fill", "red");
+					
+						/*var xPosition = parseFloat(e.x+10);
+						var yPosition = parseFloat(e.y) ;*/
+						//Update the tooltip position and value
+					d3.select("#tooltip")
+						//.style("left", xPosition + "px")
+						//.style("top", yPosition + "px")
+						.select("#station")
+						.text(d.STATION);
+
+					d3.select("#value")
+						.text(d.USAF);
+					
+					//Show the tooltip
+					d3.select("#tooltip").classed("hidden", false);
+				})
+				.on("mouseout", function(e){
+					d3.select(this).attr("fill", "black");
+					//Hide the tooltip
+					d3.select("#tooltip").classed("hidden", true);
+				});
+			}
+        
+        })
+        console.log(data);
     });
 }
 
 
 function loadStats() {
 
-    d3.json("../data/reducedMonthStationHour2003_2004.json", function(error,data){
+    d3.json("../data/reducedMonthStationHour2003_2004.json", function(error, data){
+       // console.log(data[690150][0].sum);
         completeDataSet= data;
+        keys = Object.keys(data);
+        keys.forEach(function(d, i){
+        	if(data[d].length>=1){
+        	//console.log(data[d][0].sum);
+        		if(data[d][0].sum > max){
+        			max=data[d][0].sum;
+        		}
+        	}
+        	
+        	//data[d][0].map(function(e, j){
+        		
+        	//});
+        });
+        //console.log(max);
 
 		//....
 		
         loadStations();
-    })
+    });
 
 }
 
@@ -74,7 +168,7 @@ function loadStats() {
 d3.json("../data/us-named.json", function(error, data) {
 
     var usMap = topojson.feature(data,data.objects.states).features
-    console.log(usMap);
+    //console.log(usMap);
 
     svg.selectAll(".country").data(usMap).enter().append("path").attr("class", "country").attr("d", path).on("click", clicked);
     // see also: http://bl.ocks.org/mbostock/4122298

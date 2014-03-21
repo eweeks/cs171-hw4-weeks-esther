@@ -16,7 +16,8 @@
 <script>
 //change/clean up when have clarification on data format to output, currently
 //not separating by month, only id.
-var reducedDataSet={ month:[] };
+var reducedDataSet={ };
+var trail =[690150, 690230];
 
     d3.json("../data/allData2003_2004.json",function(error,data){
        
@@ -24,14 +25,14 @@ var reducedDataSet={ month:[] };
         var allTimes =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
         var timeParser = d3.time.format("%b %_d, %Y %X %p");
        var keys = Object.keys(data);
-       var trail =[690150, 690230];
+      
 
 		
 		
-		//keys.forEach(function(d, i){
-		trail.forEach(function(d, i){
+		keys.forEach(function(d, i){
+		//trail.forEach(function(d, i){
 			//var d=690150;
-			reducedDataSet.month[d]={};
+			reducedDataSet[d]={};
 			var sum =0;
 			data[d].map(function(e, j){
 				//use this with array for each month if need to separate that way..
@@ -43,7 +44,7 @@ var reducedDataSet={ month:[] };
 							allTimes[f] = h;
 						}
 						
-						reducedDataSet.month[d]={"sum": sum,
+						reducedDataSet[d]=[{"id": d,"sum": sum,
 						"hourly":{ "01:00:00 AM": allTimes[1], "02:00:00 AM": allTimes[2],
 						"03:00:00 AM": allTimes[3], "04:00:00 AM": allTimes[4],
 						"05:00:00 AM": allTimes[5], "06:00:00 AM": allTimes[6],
@@ -55,30 +56,39 @@ var reducedDataSet={ month:[] };
 						"17:00:00 PM": allTimes[17], "18:00:00 PM": allTimes[18],
 						"19:00:00 PM": allTimes[19], "20:00:00 PM": allTimes[20], 
 						"21:00:00 PM": allTimes[21], "22:00:00 PM": allTimes[22],
-						"23:00:00 PM": allTimes[23], "00:00:00 AM": allTimes[0],}};
+						"23:00:00 PM": allTimes[23], "00:00:00 AM": allTimes[0],}}];
 					}
 				//}
        			
        		
        		//});
 			//console.log(allTimes);
-		});
+			});
 		});
 		
-		console.log(reducedDataSet);
+		//console.log(reducedDataSet);
 	
-		saveToFile(reducedDataSet.month,"reducedMonthStationHour2003_2004.json");
+		saveToFile(reducedDataSet,"reducedMonthStationHour2003_2004.json");
     });
 
 	
 	
     var saveToFile = function(object, filename){
-    	console.log(object);
-    	var o = object
+    	//console.log(object);
+    	//var trail =[690150, 690230];
+    	var o = object;
+    	var k =object.sum;
     	//var jsonString = object.toString();
-        var blob, blobText;
-        blobText = [JSON.stringify(o, null, 2)];
-        console.log(blobText);
+    	 var blob, blobText;
+    	 blobText=[];
+    	/*trail.forEach(function(d, i){
+    		//console.log(d)
+    		blobText.push(JSON.stringify(object[d], null, 2));
+    	});*/
+    	
+       
+       blobText = [JSON.stringify(object, null, 2)];
+       //console.log(blobText);
         blob = new Blob(blobText, {
             type: "text/plain;charset=utf-8"
         });

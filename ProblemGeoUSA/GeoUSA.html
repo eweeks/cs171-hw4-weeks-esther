@@ -52,12 +52,34 @@
         fill:gray;
         opacity: .3;
     }
+    
+     #tooltip {
+	position: absolute;
+	width: 400px;
+	height: 100px;
+	padding: 5px;
+	background-color: white;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	pointer-events: none;
+  }
+
+  #tooltip.hidden {
+	display: none;
+  }
 
 
 
 </style>
 
-
+<div id="tooltip" class="hidden">
+	<p>Station: <span id="station"></span></p>
+	<p>Value: <span id="value"></span></p>
+</div>
 
 <table>
     <tr><td><div id="vis"></div></td><td><div id="detailVis"></div></td></tr>
