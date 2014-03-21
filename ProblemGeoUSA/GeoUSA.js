@@ -28,12 +28,23 @@ var detailVis = d3.select("#detailVis").append("svg").attr({
 var canvas = d3.select("#vis").append("svg").attr({
     width: width + margin.left + margin.right,
     height: height + margin.top + margin.bottom
-    })
+    });
+    
+var title = canvas.append("text")
+					.attr("class", "title")
+					.text("Solar Radiation Data")
+					.attr("x", bbVis.w/2)
+					.attr("y", 40);
+					
+var sub = canvas.append("text")
+					.attr("class", "sub")
+					.text("2003-2004")
+					.attr("x", (bbVis.w/2)+50)
+					.attr("y", 70);
 
 var svg = canvas.append("g").attr({
         transform: "translate(" + margin.left + "," + margin.top + ")"
     });
-
 
 var projection = d3.geo.albersUsa().translate([width / 2, height / 2]);//.precision(.1);
 var path = d3.geo.path().projection(projection);
@@ -189,8 +200,17 @@ function loadStations() {
        			 });
 					console.log(station);
 					
+					//Use R max, or regular max?
+					
+					var h=200;
+					var w =300;
+					var padding =50;
+					
 					//yScale
-					var yScale = d3.scale.linear().domain([rMax, 0]).range([50, 180]);
+					var yScale = d3.scale.linear().domain([rMax, 0]).range([padding, h]);
+					
+					//yScale
+					var yScaleT = d3.scale.linear().domain([0, max]).range([h, padding]);
 					
 					//yAxis
 					yAxis = d3.svg.axis()
@@ -207,7 +227,12 @@ function loadStations() {
 					//xScale 
 					var xScale = d3.scale.ordinal()
 						.domain(tKeys.map(function (d) {return d; }))
-						.rangeRoundBands([50, 300], .1);
+						.rangeRoundBands([padding, w], .1);
+						
+					//xScale 
+					var xScale2 = d3.scale.ordinal()
+						.domain(tKeys.map(function (d) {return d; }))
+						.rangeRoundBands([padding, w], .1);
 						
 					//xAxis
 					var xAxis = d3.svg.axis()
@@ -217,9 +242,10 @@ function loadStations() {
 					//Add X axis
 					var axis = detailVis.append("g")
 						.attr("class", "axis line graph")
-						.attr("transform", "translate(30, 180)") 
+						.attr("transform", "translate(30,"+h+")") 
 						.call(xAxis);
-						
+					
+					//rotates text to angle
 					axis.selectAll("text")
 						.attr("transform", function(d) {
 							return "rotate(-80)translate(-40, -11)";
@@ -233,12 +259,13 @@ function loadStations() {
 						.attr("x",  function(d, i) {
         					return xScale(tKeys[i]);
     					})
+    					.attr("transform", "translate(10, 0)") 
 						.attr("y", function(d) { 
 							return yScale(d); 
 							
 						})
 						.attr("height", function(d) { 
-								return (180-yScale(d)); 
+								return (h-yScale(d)); 
 						})
 						.attr("width",  xScale.rangeBand())
 				});
