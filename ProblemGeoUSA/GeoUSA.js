@@ -22,7 +22,7 @@ var bbVis = {
 
 var detailVis = d3.select("#detailVis").append("svg").attr({
     width:350,
-    height:200
+    height:300
 })
 
 var canvas = d3.select("#vis").append("svg").attr({
@@ -149,14 +149,79 @@ function loadStations() {
 				.on("click", function(e){
 					d3.select(".graph").remove();
 				
-					detailVis
-					.append("text")
+					//var g =detailVis.append("div").attr("class", "graph")
+					
+					detailVis.append("text")
 					.attr("class", "graph")
 					.text(d.STATION)
 					.attr("x", 35)
 					.attr("y", 35)
 					.attr("fill", "black")
 					.attr("font-size", "11px");
+					
+					//get max number for range
+					var rMax=0;
+					var tKeys;
+					keys.forEach(function(e, j){
+        			
+        			if(completeDataSet[e].length>=1){
+        				//console.log(completeDataSet[e][0].sum);
+        				tKeys = Object.keys(completeDataSet[e][0].hourly);
+        				
+        				if(d["USAF"] == completeDataSet[e][0].id){
+        				console.log(completeDataSet[e][0].hourly);
+        					var k = completeDataSet[e][0].hourly;
+        					//console.log(k);
+        					tKeys.forEach(function(j, k){
+        						console.log(completeDataSet[e][0].hourly[j]);
+        						if(completeDataSet[e][0].hourly[j] >= rMax){
+        							rMax = completeDataSet[e][0].hourly[j];
+        						}
+        					});
+        					/*completeDataSet[e][0].hourly.map(function(e, j){
+        						
+        					})*/
+        				}
+        			
+        			}
+       			 });
+					console.log(rMax);
+					
+					//yScale
+					var yScale = d3.scale.linear().domain([rMax, 0]).range([50, 180]);
+					
+					//yAxis
+					yAxis = d3.svg.axis()
+						.scale(yScale)
+						.orient("left")
+						.ticks(5);
+						
+					//Draw Y axis
+					detailVis.append("g")
+						.attr("class", "axis line")
+						.attr("transform", "translate(80, 0)")
+						.call(yAxis)
+						
+					//xScale 
+					var xScale = d3.scale.ordinal()
+						.domain(tKeys.map(function (d) {return d; }))
+						.rangeRoundBands([50, 300], .1);
+						
+					//xAxis
+					var xAxis = d3.svg.axis()
+						.scale(xScale)
+						.orient("bottom");
+					
+					//Add X axis
+					var axis = detailVis.append("g")
+						.attr("class", "axis line")
+						.attr("transform", "translate(30, 180)") 
+						.call(xAxis);
+						
+					axis.selectAll("text")
+						.attr("transform", function(d) {
+							return "rotate(-80)translate(-40, -11)";
+						});
 				});
 			}
         
