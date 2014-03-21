@@ -147,7 +147,7 @@ function loadStations() {
 					d3.select("#tooltip").classed("hidden", true);
 				})
 				.on("click", function(e){
-					d3.select(".graph").remove();
+					d3.selectAll(".graph").remove();
 				
 					//var g =detailVis.append("div").attr("class", "graph")
 					
@@ -162,7 +162,7 @@ function loadStations() {
 					//get max number for range
 					var rMax=0;
 					var tKeys;
-					var station;
+					var station=[];
 					keys.forEach(function(e, j){
         			
         			if(completeDataSet[e].length>=1){
@@ -170,12 +170,12 @@ function loadStations() {
         				tKeys = Object.keys(completeDataSet[e][0].hourly);
         				
         				if(d["USAF"] == completeDataSet[e][0].id){
-        					//console.log(completeDataSet[e][0].hourly);
-        					station = completeDataSet[e][0].hourly;
+        					console.log(completeDataSet[e][0].hourly);
+        					//station = completeDataSet[e][0].hourly;
         					//console.log(k);
         					tKeys.forEach(function(j, k){
         						//console.log(completeDataSet[e][0].hourly[j]);
-        						
+        						station.push(completeDataSet[e][0].hourly[j]);
         						if(completeDataSet[e][0].hourly[j] >= rMax){
         							rMax = completeDataSet[e][0].hourly[j];
         						}
@@ -187,7 +187,7 @@ function loadStations() {
         			
         			}
        			 });
-					//console.log(rMax);
+					console.log(station);
 					
 					//yScale
 					var yScale = d3.scale.linear().domain([rMax, 0]).range([50, 180]);
@@ -200,7 +200,7 @@ function loadStations() {
 						
 					//Draw Y axis
 					detailVis.append("g")
-						.attr("class", "axis line")
+						.attr("class", "axis line graph")
 						.attr("transform", "translate(80, 0)")
 						.call(yAxis)
 						
@@ -216,7 +216,7 @@ function loadStations() {
 					
 					//Add X axis
 					var axis = detailVis.append("g")
-						.attr("class", "axis line")
+						.attr("class", "axis line graph")
 						.attr("transform", "translate(30, 180)") 
 						.call(xAxis);
 						
@@ -229,22 +229,18 @@ function loadStations() {
 					detailVis.selectAll(".bar")
 						.data(station)
 						.enter().append("rect")
-						/*.attr("x", "10")
+						.attr("class", "bar graph")
+						.attr("x",  function(d, i) {
+        					return xScale(tKeys[i]);
+    					})
 						.attr("y", function(d) { 
-							if(Number.isNaN(d.pop)){
-								return graphH-30;
-							}else{
-								return yScale(d.pop); 
-							}
+							return yScale(d); 
+							
 						})
 						.attr("height", function(d) { 
-							if(Number.isNaN(d.pop)){
-								return 0;
-							}else{
-								return (graphH-30)- yScaleT(d.pop); 
-							}
+								return (180-yScale(d)); 
 						})
-						.attr("width", (graphW-240) / list.values.length - barPadding)*/
+						.attr("width",  xScale.rangeBand())
 				});
 			}
         
