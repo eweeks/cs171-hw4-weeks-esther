@@ -111,18 +111,18 @@ function loadStations() {
 						}
 						return sScale(r);
 					})
-					.attr("fill", function(e, i){
+					.attr("class", function(e, i){
 						//if object has a sum, use that, else use zero
 						if("sum" in d){
-							return "blue";
+							return "station hasData";
 						}
-						return "grey";
+						return "station";
 						
 						
 					})
 					.on("mouseover", function(e) {
 						//console.log(e);
-						d3.select(this).attr("fill", "red");
+						d3.select(this).attr("id", "hover");
 					
 						/*var xPosition = parseFloat(e.x+10);
 						var yPosition = parseFloat(e.y) ;*/
@@ -141,17 +141,22 @@ function loadStations() {
 				})
 				.on("mouseout", function(e){
 					d3.select(this)
-					.attr("fill", function(e, i){
-						//if object has a sum, use that, else use zero
-						if("sum" in d){
-							return "blue";
-						}
-						return "grey";
-						
-						
-					})
+					.attr("id", "");
+					
 					//Hide the tooltip
 					d3.select("#tooltip").classed("hidden", true);
+				})
+				.on("click", function(e){
+					d3.select(".graph").remove();
+				
+					detailVis
+					.append("text")
+					.attr("class", "graph")
+					.text(d.STATION)
+					.attr("x", 35)
+					.attr("y", 35)
+					.attr("fill", "black")
+					.attr("font-size", "11px");
 				});
 			}
         
