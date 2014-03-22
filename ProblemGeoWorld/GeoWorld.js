@@ -77,6 +77,8 @@ function runAQueryOn(indicatorString) {
 var initVis = function(error, indicators, world){
     console.log(indicators);
     console.log(world);
+    
+  svg.selectAll("path").data(world.features).enter().append("path").attr("d", path).attr("class", "country");
 
 
 }
@@ -103,7 +105,7 @@ var changePro = function(){
 
     textLabel.text(projectionMethods[actualProjectionMethod].name);
     path= d3.geo.path().projection(projectionMethods[actualProjectionMethod].method);
-    //svg.selectAll(".country").transition().duration(750).attr("d",path);
+    svg.selectAll(".country").transition().duration(750).attr("d",path);
 };
 
 d3.select("body").append("button").text("changePro").on({
@@ -115,7 +117,7 @@ d3.select("body").append("button").text("changePro").on({
 
 
 
-})
+//})
 
 
 
