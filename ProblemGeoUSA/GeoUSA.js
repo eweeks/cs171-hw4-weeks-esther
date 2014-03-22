@@ -172,6 +172,7 @@ function loadStations() {
 					
 					//get max number for range
 					var rMax=0;
+					var tMax =0;
 					var tKeys;
 					var station=[];
 					keys.forEach(function(e, j){
@@ -179,6 +180,14 @@ function loadStations() {
         			if(completeDataSet[e].length>=1){
         				//console.log(completeDataSet[e][0].sum);
         				tKeys = Object.keys(completeDataSet[e][0].hourly);
+        				
+        				//get largest hourly value
+        				tKeys.forEach(function(l, m){
+        					if(completeDataSet[e][0].hourly[l] > tMax){
+        						tMax= completeDataSet[e][0].hourly[l];
+        					}
+        				});
+        				
         				
         				if(d["USAF"] == completeDataSet[e][0].id){
         					console.log(completeDataSet[e][0].hourly);
@@ -190,6 +199,7 @@ function loadStations() {
         						if(completeDataSet[e][0].hourly[j] >= rMax){
         							rMax = completeDataSet[e][0].hourly[j];
         						}
+        						
         					});
         					/*completeDataSet[e][0].hourly.map(function(e, j){
         						
@@ -198,7 +208,8 @@ function loadStations() {
         			
         			}
        			 });
-					console.log(station);
+					console.log(tMax);
+					console.log(rMax);
 					
 					//Use R max, or regular max?
 					
@@ -207,10 +218,7 @@ function loadStations() {
 					var padding =50;
 					
 					//yScale
-					var yScale = d3.scale.linear().domain([rMax, 0]).range([padding, h]);
-					
-					//yScale
-					var yScaleT = d3.scale.linear().domain([0, max]).range([h, padding]);
+					var yScale = d3.scale.linear().domain([tMax, 0]).range([padding, h]);
 					
 					//yAxis
 					yAxis = d3.svg.axis()
