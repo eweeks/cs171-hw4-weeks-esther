@@ -79,9 +79,10 @@ function runAQueryOn(indicatorString) {
 
 runAQueryOn();
 
-var initVis = function(error, indicators, world){
+var initVis = function(error, indicators, world, countries){
     console.log(indicators);
     console.log(world);
+    console.log(countries[1].id);
     
   svg.selectAll("path").data(world.features).enter().append("path").attr("d", path).attr("class", "country");
 
@@ -94,7 +95,7 @@ var initVis = function(error, indicators, world){
 queue()
     .defer(d3.csv,"../data/worldBank_indicators.csv")
     .defer(d3.json,"../data/world_data.json")
-    // .defer(d3.json,"../data/WorldBankCountries.json")
+    .defer(d3.json,"../data/WorldBankCountries.json")
     .await(initVis);
 
 
