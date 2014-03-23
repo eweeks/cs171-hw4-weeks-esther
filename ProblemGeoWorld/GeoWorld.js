@@ -64,7 +64,11 @@ function runAQueryOn(indicatorString) {
         jsonpCallback:'getdata',
         dataType:'jsonp',
         success: function (data, status){
+           console.log(data);
            
+           if(status != "success"){
+           	console.log("Error with country data");
+           }
 
         }
 
@@ -73,6 +77,7 @@ function runAQueryOn(indicatorString) {
 
 }
 
+runAQueryOn();
 
 var initVis = function(error, indicators, world){
     console.log(indicators);

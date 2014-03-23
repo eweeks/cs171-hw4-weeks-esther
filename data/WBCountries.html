@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script type="text/javascript" src="../libs/jquery-1.11.0.min.js"></script>
+<script src="../libs/FileSaver.js"></script>
+
+<div id="vis"></div>
+
+
+<script>
+//change/clean up when have clarification on data format to output, currently
+//not separating by month, only id.
+var reducedDataSet={ };
+var trail =[690150, 690230];
+
+d3.json("../data/world_data.json",function(error, json){
+
+	console.log(json);
+	
+	json.features.map(function(d, i){
+		console.log(d.id);
+	});
+
+    function Query() {
+    	$.ajax({
+        	url: "http://api.worldbank.org/countries/all?format=jsonP&prefix=Getdata&per_page=500&date=2000",
+        	jsonpCallback:'getdata',
+        	dataType:'jsonp',
+        	success: function (data, status){
+           		console.log(data);
+           		data[1].map(function(d, i){
+           			console.log(d.id);
+           		});
+           		
+           		//should print if error?
+           		if(status != "success"){
+           			console.log("Error with country data");
+          	 	}
+
+        	}
+
+    	});
+
+
+	}
+		
+	Query();
+	
+//		saveToFile(reducedDataSet,"WorldBankCountries.json");
+
+});
+
+	//Query();
+	
+    var saveToFile = function(object, filename){
+    	
+    	 var blob, blobText;
+    	 blobText=[];
+       blobText = [JSON.stringify(object, null, 2)];
+        blob = new Blob(blobText, {
+            type: "text/plain;charset=utf-8"
+        });
+        saveAs(blob, filename);
+    }
+
+
+</script>
+
+
+</body>
+</html>
