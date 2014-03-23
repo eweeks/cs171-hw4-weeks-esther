@@ -16,12 +16,12 @@
 <script>
 //change/clean up when have clarification on data format to output, currently
 //not separating by month, only id.
-var reducedDataSet={ };
+var reducedDataSet=[];
 var trail =[690150, 690230];
 
 d3.json("../data/world_data.json",function(error, json){
 
-	//console.log(json);
+	console.log(json);
 	
 	/*json.features.map(function(d, i){
 		//console.log(d.id);
@@ -42,6 +42,7 @@ d3.json("../data/world_data.json",function(error, json){
 						if(d.id == e.id){
 							//console.log("Match "+d.id+" "+e.id);
 							reducedDataSet[j]={"id": e.id,"name": d.name,
+							"iso":d.iso2Code,
 							"indicator":{ "id": 0, "value": 0 , }
 							};
 						}
@@ -77,6 +78,7 @@ d3.json("../data/world_data.json",function(error, json){
     	 var blob, blobText;
     	 //blobText=[];
        blobText = [JSON.stringify(object, null, 2)];
+       console.log(blobText);
         blob = new Blob(blobText, {
             type: "text/plain;charset=utf-8"
         });

@@ -49,6 +49,7 @@ var projectionMethods = [
 var actualProjectionMethod = 0;
 var colorMin = colorbrewer.Greens[3][0];
 var colorMax = colorbrewer.Greens[3][2];
+var c;
 
 
 
@@ -60,11 +61,29 @@ var path = d3.geo.path().projection(projectionMethods[0].method);
 
 function runAQueryOn(indicatorString) {
     $.ajax({
-        url: "http://api.worldbank.org/countries/all?format=jsonP&prefix=Getdata&per_page=500&date=2000", //do something here
+        url: "http://api.worldbank.org/countries/all/indicators/AG.LND.ARBL.ZS?format=jsonP&prefix=Getdata&date=2010&per_page=500", //do something here
         jsonpCallback:'getdata',
         dataType:'jsonp',
         success: function (data, status){
-           console.log(data);
+           console.log(data[1]);
+           console.log(c);
+          // var min =0;
+          //var max =0;
+           data[1].map(function(d, i){
+           		//console.log(d.country.id);
+				c.map(function(e, j){
+					if(e !== null){
+						//console.log(e.iso);
+					  	if(e.iso == d.country.id){
+							//console.log("Match "+e.iso+" "+d.country.id);
+							e.indicator.value=d.value;
+							e.indicator.id=d.indicator.id;
+							
+						}
+					}
+						
+				});
+           });
            
            if(status != "success"){
            	console.log("Error with country data");
@@ -80,9 +99,11 @@ function runAQueryOn(indicatorString) {
 runAQueryOn();
 
 var initVis = function(error, indicators, world, countries){
-    console.log(indicators);
-    console.log(world);
-    console.log(countries[1].id);
+    //console.log(indicators);
+    //console.log(world);
+   // console.log(countries[1].id);
+    c = countries;
+    //console.log(c[1]);
     
   svg.selectAll("path").data(world.features).enter().append("path").attr("d", path).attr("class", "country");
 
@@ -95,7 +116,7 @@ var initVis = function(error, indicators, world, countries){
 queue()
     .defer(d3.csv,"../data/worldBank_indicators.csv")
     .defer(d3.json,"../data/world_data.json")
-    .defer(d3.json,"../data/WorldBankCountries.json")
+    .defer(d3.json,"../data/WorldBankCountries2.json")
     .await(initVis);
 
 
