@@ -50,6 +50,7 @@ var actualProjectionMethod = 0;
 var colorMin = colorbrewer.Greens[3][0];
 var colorMax = colorbrewer.Greens[3][2];
 var c;
+var max =0;
 
 
 
@@ -79,12 +80,23 @@ function runAQueryOn(indicatorString) {
 							e.indicator.value=d.value;
 							e.indicator.id=d.indicator.id;
 							
+							
 						}
 					}
 						
 				});
            });
            
+           //Might be able to move this up into prev function
+           c.map(function(l, m){
+           	if(l !== null){
+				if(parseInt(l.indicator.value) > max){
+					max=parseInt(l.indicator.value);
+				}
+			}
+           })
+           console.log(max);
+           console.log(color(max, 59));
            if(status != "success"){
            	console.log("Error with country data");
            }
@@ -97,6 +109,16 @@ function runAQueryOn(indicatorString) {
 }
 
 runAQueryOn();
+
+
+
+function color(max, number){
+	var colorScale = d3.scale.linear()
+					.domain([ 0, max ])
+					.range([colorMin, colorMax]);
+	return colorScale(number);
+};
+
 
 var initVis = function(error, indicators, world, countries){
     //console.log(indicators);
