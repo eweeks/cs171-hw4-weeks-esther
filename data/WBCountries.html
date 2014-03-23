@@ -23,9 +23,9 @@ d3.json("../data/world_data.json",function(error, json){
 
 	console.log(json);
 	
-	json.features.map(function(d, i){
-		console.log(d.id);
-	});
+	/*json.features.map(function(d, i){
+		//console.log(d.id);
+	});*/
 
     function Query() {
     	$.ajax({
@@ -36,21 +36,34 @@ d3.json("../data/world_data.json",function(error, json){
            		console.log(data);
            		data[1].map(function(d, i){
            			console.log(d.id);
+           			
+           			json.features.map(function(e, j){
+						//console.log(e.id);
+						if(d.id == e.id){
+							//console.log("Match "+d.id+" "+e.id);
+							reducedDataSet[j]=[{"id": e.id,"name": d.name,
+							"indicator":{ "id": 0, "value": 0 , }
+							}];
+						}
+						
+					});
+           			
            		});
            		
            		//should print if error?
            		if(status != "success"){
            			console.log("Error with country data");
           	 	}
-
+				console.log(reducedDataSet);
         	}
-
+			
     	});
 
 
 	}
 		
 	Query();
+	
 	
 //		saveToFile(reducedDataSet,"WorldBankCountries.json");
 
