@@ -52,6 +52,7 @@ var colorMax = colorbrewer.Greens[3][2];
 var c;
 var indi;
 var max;
+var call;
 
 
 
@@ -62,8 +63,10 @@ var path = d3.geo.path().projection(projectionMethods[0].method);
 
 
 function runAQueryOn(indicatorString) {
+
+	call = $( "#select" ).val();
     $.ajax({
-        url: "http://api.worldbank.org/countries/all/indicators/AG.LND.ARBL.ZS?format=jsonP&prefix=Getdata&date=2010&per_page=500", //do something here
+        url: "http://api.worldbank.org/countries/all/indicators/"+call+"?format=jsonP&prefix=Getdata&date=2010&per_page=500", //do something here
         jsonpCallback:'getdata',
         dataType:'jsonp',
         success: function (data, status){
@@ -170,6 +173,28 @@ var initVis = function(error, indicators, world, countries){
     c = countries;
     indi = indicators;
     //console.log(c[1]);
+    var dropdown = d3.select("#selector")
+		.append("select")
+    	.attr("id", "select")
+    	.on("change", function(d){
+       			call = $( "#select" ).val();
+				console.log(call);
+				runAQueryOn();
+       	});
+
+	var options = dropdown.selectAll("option")
+           	.data(indi)
+         	.enter()
+           	.append("option")
+           	.text(function (d) { return d.IndicatorName; })
+       		.attr("value", function (d) { return d.IndicatorCode; });
+       		
+       		
+	call = $( "#select" ).val();
+	//console.log(call);
+    
+    
+    
     runAQueryOn();
     
   svg.selectAll("path")
@@ -182,16 +207,7 @@ var initVis = function(error, indicators, world, countries){
   })
   .attr("fill", "grey");
 
-var dropdown = d3.select("#selector")
-		.append("select")
-    	.attr("class", "select");
 
-var options = dropdown.selectAll("option")
-           	.data(indi)
-         	.enter()
-           	.append("option")
-           	.text(function (d) { return d.IndicatorName; })
-       		.attr("value", function (d) { return d.IndicatorCode; });
 
 
 }
