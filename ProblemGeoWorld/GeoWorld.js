@@ -174,22 +174,65 @@ function runAQueryOn(indicatorString) {
         	console.log(data);
         	//Adds Title
         	info.append("text")
-        	.attr("class", "info")
+        	.attr("class", "title")
         	.text("Indicator:");
         	
-			
 			//Add Indicator name
         	info.append('foreignObject')
         	.attr('x', 0)
 			.attr('y', 5)
         	.attr("class", "small info")
         	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 30)
+			.attr('height', 60)
         	.append("xhtml:body")
         	.html(data[1][0].name);
-			//.attr({
-   				// "transform":"translate(0, 20)"
-			//})
+        	
+        	//Adds Source Title
+        	info.append("text")
+        	.attr("class", "title")
+        	.text("Source:")
+        	.attr({
+    			"transform":"translate(0, 60)"
+			})
+        	
+        	//Add source info
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 70)
+        	.attr("class", "small info")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 30)
+        	.append("xhtml:body")
+        	.html(data[1][0].source.value);
+        	
+        	//Add source organ
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 90)
+        	.attr("class", "small info")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 60)
+        	.append("xhtml:body")
+        	.html(data[1][0].sourceOrganization);
+        	
+        	//Adds Notes Title
+        	info.append("text")
+        	.attr("class", "title")
+        	.text("Notes:")
+        	.attr({
+    			"transform":"translate(0, 155)"
+			})
+        	
+        	//Add source Notes
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 160)
+        	.attr("class", "small info")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 120)
+        	.append("xhtml:body")
+        	.html(data[1][0].sourceNote);
+			
 			
         }
     });
