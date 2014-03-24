@@ -34,17 +34,19 @@ d3.json("../data/world_data.json",function(error, json){
         	dataType:'jsonp',
         	success: function (data, status){
            		//console.log(data);
+           		var c =0;
            		data[1].map(function(d, i){
            			//console.log(d.id);
            			
            			json.features.map(function(e, j){
 						//console.log(e.id);
 						if(d.id == e.id){
-							//console.log("Match "+d.id+" "+e.id);
-							reducedDataSet[j]={"id": e.id,"name": d.name,
+							//console.log("Match "+d.id+" "+e.id+" "+c);
+							reducedDataSet[c]={"id": e.id,"name": d.name,
 							"iso":d.iso2Code,
 							"indicator":{ "id": 0, "value": 0 , }
 							};
+							c=c+1;
 						}
 						
 					});

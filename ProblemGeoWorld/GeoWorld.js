@@ -90,39 +90,43 @@ function runAQueryOn(indicatorString) {
            
            svg.selectAll(".country")
             .attr("fill", function(d, i){
-  				console.log(c);
+  				//console.log(c);
   				var r;
   				var t =0;
+  				r ="grey";
   				c.map(function(l, m){
   					//console.log(l);
-           			if(l !== null){
+           			//if(l !== null){
 						if(l.id == d.id){
 							//console.log(parseInt(l.indicator.value));
 							var m = getMax();
 							var l = l.indicator.value;
-							console.log(color(m, l));
-							r =color(m, l);
+							if(l !== null){
+								r =color(m, l);
+							}
+							//console.log(color(m, l));
+							//r =color(m, l);
 						}
 						//return "red";
-					}
-					if(l == null){
-						t=t+1;
-						console.log("null is "+t);
+					//}
+					//if(l == null){
+					//	t=t+1;
+					//	console.log("null is "+t);
 						//r ="grey";
-					}
+					//}
 						//r ="grey";
 					
         		});
         		/*if(d.id =="AFG"){
         			return "blue";
         		}*/
-        			console.log(r);
+        			//console.log(r);
   					return r;
   			});
            
-           //console.log(max);
-           console.log(getMax());
-           console.log(color(max, 59));
+           console.log(max);
+          // console.log(getMax());
+           //console.log(color(max, 59));
            if(status != "success"){
            	console.log("Error with country data");
            }
@@ -140,11 +144,11 @@ function runAQueryOn(indicatorString) {
 function getMax(){
 	 //Might be able to move this up into prev function
            c.map(function(l, m){
-           	if(l !== null){
+           	//if(l !== null){
 				if(parseInt(l.indicator.value) > max){
 					max=parseInt(l.indicator.value);
 				}
-			}
+			//}
            })
         return max;
 }

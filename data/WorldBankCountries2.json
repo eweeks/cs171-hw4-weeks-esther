@@ -53,8 +53,6 @@
       "value": 0
     }
   },
-  null,
-  null,
   {
     "id": "AUS",
     "name": "Australia",
@@ -325,7 +323,6 @@
       "value": 0
     }
   },
-  null,
   {
     "id": "CYP",
     "name": "Cyprus",
@@ -461,7 +458,6 @@
       "value": 0
     }
   },
-  null,
   {
     "id": "FRA",
     "name": "France",
@@ -759,7 +755,6 @@
       "value": 0
     }
   },
-  null,
   {
     "id": "KWT",
     "name": "Kuwait",
@@ -1148,6 +1143,15 @@
     }
   },
   {
+    "id": "PSE",
+    "name": "West Bank and Gaza",
+    "iso": "PS",
+    "indicator": {
+      "id": 0,
+      "value": 0
+    }
+  },
+  {
     "id": "QAT",
     "name": "Qatar",
     "iso": "QA",
@@ -1183,7 +1187,6 @@
       "value": 0
     }
   },
-  null,
   {
     "id": "SAU",
     "name": "Saudi Arabia",
@@ -1202,7 +1205,6 @@
       "value": 0
     }
   },
-  null,
   {
     "id": "SEN",
     "name": "Senegal",
@@ -1239,7 +1241,6 @@
       "value": 0
     }
   },
-  null,
   {
     "id": "SOM",
     "name": "Somalia",
@@ -1393,7 +1394,6 @@
       "value": 0
     }
   },
-  null,
   {
     "id": "TZA",
     "name": "Tanzania",
@@ -1470,15 +1470,6 @@
     "id": "VUT",
     "name": "Vanuatu",
     "iso": "VU",
-    "indicator": {
-      "id": 0,
-      "value": 0
-    }
-  },
-  {
-    "id": "PSE",
-    "name": "West Bank and Gaza",
-    "iso": "PS",
     "indicator": {
       "id": 0,
       "value": 0
