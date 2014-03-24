@@ -29,7 +29,7 @@ var svg = d3.select("#vis").append("svg").attr({
     width: width + margin.left + margin.right,
     height: height + margin.top + margin.bottom
 }).append("g").attr({
-        transform: "translate(" + margin.left + "," + margin.top + ")"
+        transform: "translate(" + margin.left + "," + (margin.top+50) + ")"
     });
     
 var info = d3.select("#textLabel")
