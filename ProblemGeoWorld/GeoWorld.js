@@ -97,7 +97,7 @@ function runAQueryOn(indicatorString) {
         dataType:'jsonp',
         success: function (data, status){
            //console.log(data[1]);
-           console.log(data);
+           //console.log(data);
           //var min =0;
           max =0;
            data[1].map(function(d, i){
@@ -154,7 +154,7 @@ function runAQueryOn(indicatorString) {
   					return r;
   			});
            
-           console.log(max);
+           //console.log(max);
           // console.log(getMax());
            //console.log(color(max, 59));
            if(status != "success"){
@@ -171,7 +171,7 @@ function runAQueryOn(indicatorString) {
         jsonpCallback:'getdata',
         dataType:'jsonp',
         success: function (data, status){
-        	console.log(data);
+        	//console.log(data);
         	//Adds Title
         	info.append("text")
         	.attr("class", "title")
@@ -220,18 +220,103 @@ function runAQueryOn(indicatorString) {
         	.attr("class", "title")
         	.text("Notes:")
         	.attr({
-    			"transform":"translate(0, 155)"
+    			"transform":"translate(0, 167)"
 			})
         	
         	//Add source Notes
         	info.append('foreignObject')
         	.attr('x', 0)
-			.attr('y', 160)
+			.attr('y', 170)
         	.attr("class", "small info")
         	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 120)
+			.attr('height', 145)
         	.append("xhtml:body")
         	.html(data[1][0].sourceNote);
+        	
+        	//Adds Country Titles
+        	info.append("text")
+        	.attr("class", "title")
+        	.text("Country:")
+        	.attr({
+    			"transform":"translate(0, 330)"
+			})
+			
+			//Add country info
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 340)
+        	.attr("class", "small info")
+        	.attr("id", "cInfo")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:body")
+        	.html();
+        	
+        	//add country capital
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 360)
+        	.attr("class", "small info")
+        	.attr("id", "cap")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:body")
+        	.html();
+        	
+        	//add country region
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 380)
+        	.attr("class", "small info")
+        	.attr("id", "reg")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:body")
+        	.html();
+        	
+        	//add country income
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 400)
+        	.attr("class", "small info")
+        	.attr("id", "inco")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:body")
+        	.html();
+        	
+        	//add country lending
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 420)
+        	.attr("class", "small info")
+        	.attr("id", "lend")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:body")
+        	.html();
+			
+			//add country lat
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 440)
+        	.attr("class", "small info")
+        	.attr("id", "lat")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:body")
+        	.html();
+        	
+        	//add country long
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 460)
+        	.attr("class", "small info")
+        	.attr("id", "lon")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:body")
+        	.html();
 			
 			
         }
@@ -270,7 +355,7 @@ var initVis = function(error, indicators, world, countries){
    // console.log(countries[1].id);
     c = countries;
     indi = indicators;
-    //console.log(c[1]);
+    console.log(c);
     //Sets up dropdown for indicators
     var dropdown = d3.select("#selector")
 		.append("select")
@@ -278,6 +363,7 @@ var initVis = function(error, indicators, world, countries){
     	.on("change", function(d){
        			call = $( "#select" ).val();
 				//console.log(call);
+				d3.selectAll(".clicked").classed({'clicked': false});
 				runAQueryOn();
        	});
 	//adds options to dropdown selector
@@ -299,6 +385,7 @@ var initVis = function(error, indicators, world, countries){
     	.on("change", function(d){
        			date = $("#selectY").val();
 				//console.log("Change "+date);
+				d3.selectAll(".clicked").classed({'clicked': false});
 				runAQueryOn();
        	});
        	
@@ -323,7 +410,29 @@ var initVis = function(error, indicators, world, countries){
   .attr("id", function(d, i){
   	return d.id;
   })
-  .attr("fill", "grey");
+  .attr("fill", "grey")
+  .on("click", function(d, i){
+  	d3.selectAll(".clicked").classed({'clicked': false});
+  //var k = $( this ).css( "fill" );
+  //d3.selectAll(".clicked").attr("fill", k);
+  	
+  	d3.select(this).classed({'clicked': true});
+  	//console.log(d.id);
+  	c.map(function (e){
+  		if(d.id == e.id){
+  			console.log(e.id+" "+d.id);
+  			d3.select("#cInfo").html(e.name);
+  			d3.select("#cap").html("Capital: "+e.about.capital);
+  			d3.select("#reg").html("Region: "+e.about.region);
+  			d3.select("#inco").html("Income: "+e.about.income);
+  			d3.select("#lend").html("Lending: "+e.about.lending);
+  			d3.select("#lat").html("Lat: "+e.about.lat);
+  			d3.select("#lon").html("Long: "+e.about.long);
+  			
+			
+  		}
+  	})
+  });
 
 
 
