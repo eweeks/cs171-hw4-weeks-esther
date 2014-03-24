@@ -53,25 +53,35 @@ var c;
 var indi;
 var max;
 var call;
+var date;
+var years =[];
 
 
 
 var path = d3.geo.path().projection(projectionMethods[0].method);
 
-
+//fill in years array
+for(i=2013; i>=1960; i--){
+ 	years.push(parseInt(i));
+ }
+ 
+ console.log(years);
 
 
 
 function runAQueryOn(indicatorString) {
 
 	call = $( "#select" ).val();
+	date = $( "#selectY" ).val();
+	//date=2010;
+	console.log(date);
     $.ajax({
-        url: "http://api.worldbank.org/countries/all/indicators/"+call+"?format=jsonP&prefix=Getdata&date=2010&per_page=500", //do something here
+        url: "http://api.worldbank.org/countries/all/indicators/"+call+"?format=jsonP&prefix=Getdata&date="+date+"&per_page=500", //do something here
         jsonpCallback:'getdata',
         dataType:'jsonp',
         success: function (data, status){
            //console.log(data[1]);
-           console.log(c);
+           console.log(data);
           //var min =0;
           max =0;
            data[1].map(function(d, i){
@@ -173,6 +183,7 @@ var initVis = function(error, indicators, world, countries){
     c = countries;
     indi = indicators;
     //console.log(c[1]);
+    //Sets up dropdown for indicators
     var dropdown = d3.select("#selector")
 		.append("select")
     	.attr("id", "select")
@@ -181,7 +192,7 @@ var initVis = function(error, indicators, world, countries){
 				console.log(call);
 				runAQueryOn();
        	});
-
+	//adds options to dropdown selector
 	var options = dropdown.selectAll("option")
            	.data(indi)
          	.enter()
@@ -191,9 +202,28 @@ var initVis = function(error, indicators, world, countries){
        		
        		
 	call = $( "#select" ).val();
-	//console.log(call);
-    
-    
+	
+	
+	//Sets up dropdown for year, selectorYear
+	var dropYear= d3.select("#selectorYear")
+		.append("select")
+    	.attr("id", "selectY")
+    	.on("change", function(d){
+       			date = $("#selectY").val();
+				console.log("Change "+date);
+				runAQueryOn();
+       	});
+       	
+	//adds options to dropdown selector for year
+	var sYears = dropYear.selectAll("option")
+           	.data(years)
+         	.enter()
+           	.append("option")
+           	.text(function (d) { return d; })
+       		.attr("value", function (d) { return d; });
+       		
+    date = $( "#selectY" ).val();
+    console.log( $( "#selectY" ).val()); 
     
     runAQueryOn();
     
