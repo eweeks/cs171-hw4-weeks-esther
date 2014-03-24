@@ -68,6 +68,8 @@ var max;
 var call;
 var date;
 var years =[];
+var leg =[];
+var colorScale;
 
 
 
@@ -78,7 +80,33 @@ for(i=2013; i>=1960; i--){
  	years.push(parseInt(i));
  }
  
- console.log(years);
+ //fill in leg array
+for(i=0; i<=15; i++){
+ 	leg.push(parseInt(i));
+ }
+ 
+ console.log(leg);
+
+var legend = svg.selectAll("rect")
+				.data(leg)
+				.enter()
+    			.append("rect")
+    			.attr("x", 30)
+    			.attr("y", function(d, i){
+    				return 300+(i*10);
+    			})
+   				.attr("width", 40)
+   				.attr("height", 10)
+   				.style("fill", function(d, i){
+   					return color(15, i)
+   				});
+   				
+   				svg.append('text')
+    			.attr("x", 80)
+    			.attr("y", 300)
+   				.attr("width", 40)
+   				.attr("height", 10)
+   				.text("0");
 
 
 
@@ -89,6 +117,7 @@ function runAQueryOn(indicatorString) {
 	
 	//remove any info already there
 	d3.selectAll(".info").remove();
+	d3.selectAll("#leg").remove();
 	//date=2010;
 	//console.log(date);
     $.ajax({
@@ -157,6 +186,17 @@ function runAQueryOn(indicatorString) {
            //console.log(max);
           // console.log(getMax());
            //console.log(color(max, 59));
+           //Legend                          
+   				
+   				svg.append('text')
+    			.attr("x", 80)
+    			.attr("y", 460)
+    			.attr("id", "leg")
+   				.attr("width", 40)
+   				.attr("height", 10)
+   				.text(max);
+           
+           
            if(status != "success"){
            	console.log("Error with country data");
            }
@@ -342,11 +382,12 @@ function getMax(){
 
 
 function color(max, number){
-	var colorScale = d3.scale.linear()
+	 colorScale = d3.scale.linear()
 					.domain([ 0, max ])
 					.range([colorMin, colorMax]);
 	return colorScale(number);
 };
+
 
 
 var initVis = function(error, indicators, world, countries){
