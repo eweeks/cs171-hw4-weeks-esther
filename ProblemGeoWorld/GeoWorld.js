@@ -6,10 +6,12 @@ var margin = {
     top: 50,
     right: 50,
     bottom: 50,
-    left: 50
+    left: 50,
+    text: 10,
+    screen: 1130
 };
 
-var width = 960 - margin.left - margin.right;
+var width = 950 - margin.left - margin.right;
 var height = 700 - margin.bottom - margin.top;
 
 
@@ -29,6 +31,17 @@ var svg = d3.select("#vis").append("svg").attr({
 }).append("g").attr({
         transform: "translate(" + margin.left + "," + margin.top + ")"
     });
+    
+var info = d3.select("#textLabel")
+			.append("svg")
+			.attr({
+				width: margin.screen-width,
+				height: height + margin.top + margin.bottom
+			})
+			.append("g")
+			.attr({
+				transform: "translate(" + margin.text + "," + margin.top + ")"
+			});
 
 // --- this is just for fun.. play arround with it iof you like :)
 var projectionMethods = [
@@ -73,8 +86,11 @@ function runAQueryOn(indicatorString) {
 
 	call = $( "#select" ).val();
 	date = $( "#selectY" ).val();
+	
+	//remove any info already there
+	d3.selectAll(".info").remove();
 	//date=2010;
-	console.log(date);
+	//console.log(date);
     $.ajax({
         url: "http://api.worldbank.org/countries/all/indicators/"+call+"?format=jsonP&prefix=Getdata&date="+date+"&per_page=500", //do something here
         jsonpCallback:'getdata',
@@ -148,6 +164,35 @@ function runAQueryOn(indicatorString) {
         }
 
     });
+    
+    //call to get indicator information
+    $.ajax({
+        url: "http://api.worldbank.org/indicators/"+call+"?format=jsonP&prefix=Getdata&per_page=500",
+        jsonpCallback:'getdata',
+        dataType:'jsonp',
+        success: function (data, status){
+        	console.log(data);
+        	//Adds Title
+        	info.append("text")
+        	.attr("class", "info")
+        	.text("Indicator:");
+        	
+			
+			//Add Indicator name
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 5)
+        	.attr("class", "small info")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 30)
+        	.append("xhtml:body")
+        	.html(data[1][0].name);
+			//.attr({
+   				// "transform":"translate(0, 20)"
+			//})
+			
+        }
+    });
 
 
 }
@@ -177,7 +222,7 @@ function color(max, number){
 
 
 var initVis = function(error, indicators, world, countries){
-    console.log(indicators);
+   // console.log(indicators);
     //console.log(world);
    // console.log(countries[1].id);
     c = countries;
@@ -189,7 +234,7 @@ var initVis = function(error, indicators, world, countries){
     	.attr("id", "select")
     	.on("change", function(d){
        			call = $( "#select" ).val();
-				console.log(call);
+				//console.log(call);
 				runAQueryOn();
        	});
 	//adds options to dropdown selector
@@ -210,7 +255,7 @@ var initVis = function(error, indicators, world, countries){
     	.attr("id", "selectY")
     	.on("change", function(d){
        			date = $("#selectY").val();
-				console.log("Change "+date);
+				//console.log("Change "+date);
 				runAQueryOn();
        	});
        	
@@ -223,7 +268,7 @@ var initVis = function(error, indicators, world, countries){
        		.attr("value", function (d) { return d; });
        		
     date = $( "#selectY" ).val();
-    console.log( $( "#selectY" ).val()); 
+    //console.log( $( "#selectY" ).val()); 
     
     runAQueryOn();
     

@@ -33,7 +33,7 @@ d3.json("../data/world_data.json",function(error, json){
         	jsonpCallback:'getdata',
         	dataType:'jsonp',
         	success: function (data, status){
-           		//console.log(data);
+           		console.log(data);
            		var c =0;
            		data[1].map(function(d, i){
            			//console.log(d.id);
@@ -44,7 +44,10 @@ d3.json("../data/world_data.json",function(error, json){
 							//console.log("Match "+d.id+" "+e.id+" "+c);
 							reducedDataSet[c]={"id": e.id,"name": d.name,
 							"iso":d.iso2Code,
-							"indicator":{ "id": 0, "value": 0 , }
+							"indicator":{ "id": 0, "value": 0 , },
+							"about":{"capital": d.capitalCity, "long": d.longitude,
+								"lat": d.latitude, "region": d.region.value,
+								"income": d.incomeLevel.value, "lending":d.lendingType.value}
 							};
 							c=c+1;
 						}
@@ -57,7 +60,7 @@ d3.json("../data/world_data.json",function(error, json){
            		if(status != "success"){
            			console.log("Error with country data");
           	 	}
-				//console.log(reducedDataSet);
+				console.log(reducedDataSet);
 				saveToFile(reducedDataSet,"WorldBankCountries.json");
         	}
 			
@@ -76,11 +79,11 @@ d3.json("../data/world_data.json",function(error, json){
 	//Query();
 	
     var saveToFile = function(object, filename){
-    	console.log(object);
+    	//console.log(object);
     	 var blob, blobText;
     	 //blobText=[];
        blobText = [JSON.stringify(object, null, 2)];
-       console.log(blobText);
+       //console.log(blobText);
         blob = new Blob(blobText, {
             type: "text/plain;charset=utf-8"
         });
