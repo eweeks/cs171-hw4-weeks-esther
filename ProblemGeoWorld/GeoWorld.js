@@ -50,7 +50,7 @@ var actualProjectionMethod = 0;
 var colorMin = colorbrewer.Greens[3][0];
 var colorMax = colorbrewer.Greens[3][2];
 var c;
-var max =0;
+var max;
 
 
 
@@ -68,8 +68,8 @@ function runAQueryOn(indicatorString) {
         success: function (data, status){
            console.log(data[1]);
            console.log(c);
-          // var min =0;
-          //var max =0;
+          //var min =0;
+          max =0;
            data[1].map(function(d, i){
            		//console.log(d.country.id);
 				c.map(function(e, j){
@@ -86,16 +86,42 @@ function runAQueryOn(indicatorString) {
 						
 				});
            });
+           getMax();
            
-           //Might be able to move this up into prev function
-           c.map(function(l, m){
-           	if(l !== null){
-				if(parseInt(l.indicator.value) > max){
-					max=parseInt(l.indicator.value);
-				}
-			}
-           })
-           console.log(max);
+           svg.selectAll(".country")
+            .attr("fill", function(d, i){
+  				console.log(c);
+  				var r;
+  				var t =0;
+  				c.map(function(l, m){
+  					//console.log(l);
+           			if(l !== null){
+						if(l.id == d.id){
+							//console.log(parseInt(l.indicator.value));
+							var m = getMax();
+							var l = l.indicator.value;
+							console.log(color(m, l));
+							r =color(m, l);
+						}
+						//return "red";
+					}
+					if(l == null){
+						t=t+1;
+						console.log("null is "+t);
+						//r ="grey";
+					}
+						//r ="grey";
+					
+        		});
+        		/*if(d.id =="AFG"){
+        			return "blue";
+        		}*/
+        			console.log(r);
+  					return r;
+  			});
+           
+           //console.log(max);
+           console.log(getMax());
            console.log(color(max, 59));
            if(status != "success"){
            	console.log("Error with country data");
@@ -108,8 +134,20 @@ function runAQueryOn(indicatorString) {
 
 }
 
-runAQueryOn();
+//runAQueryOn();
+//initVis;
 
+function getMax(){
+	 //Might be able to move this up into prev function
+           c.map(function(l, m){
+           	if(l !== null){
+				if(parseInt(l.indicator.value) > max){
+					max=parseInt(l.indicator.value);
+				}
+			}
+           })
+        return max;
+}
 
 
 function color(max, number){
@@ -126,8 +164,17 @@ var initVis = function(error, indicators, world, countries){
    // console.log(countries[1].id);
     c = countries;
     //console.log(c[1]);
+    runAQueryOn();
     
-  svg.selectAll("path").data(world.features).enter().append("path").attr("d", path).attr("class", "country");
+  svg.selectAll("path")
+  .data(world.features)
+  .enter().append("path")
+  .attr("d", path)
+  .attr("class", "country")
+  .attr("id", function(d, i){
+  	return d.id;
+  })
+  .attr("fill", "grey");
 
 
 }
