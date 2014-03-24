@@ -50,6 +50,7 @@ var actualProjectionMethod = 0;
 var colorMin = colorbrewer.Greens[3][0];
 var colorMax = colorbrewer.Greens[3][2];
 var c;
+var indi;
 var max;
 
 
@@ -66,7 +67,7 @@ function runAQueryOn(indicatorString) {
         jsonpCallback:'getdata',
         dataType:'jsonp',
         success: function (data, status){
-           console.log(data[1]);
+           //console.log(data[1]);
            console.log(c);
           //var min =0;
           max =0;
@@ -163,10 +164,11 @@ function color(max, number){
 
 
 var initVis = function(error, indicators, world, countries){
-    //console.log(indicators);
+    console.log(indicators);
     //console.log(world);
    // console.log(countries[1].id);
     c = countries;
+    indi = indicators;
     //console.log(c[1]);
     runAQueryOn();
     
@@ -179,6 +181,17 @@ var initVis = function(error, indicators, world, countries){
   	return d.id;
   })
   .attr("fill", "grey");
+
+var dropdown = d3.select("#selector")
+		.append("select")
+    	.attr("class", "select");
+
+var options = dropdown.selectAll("option")
+           	.data(indi)
+         	.enter()
+           	.append("option")
+           	.text(function (d) { return d.IndicatorName; })
+       		.attr("value", function (d) { return d.IndicatorCode; });
 
 
 }
