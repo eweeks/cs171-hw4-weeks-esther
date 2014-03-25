@@ -288,22 +288,20 @@ function runAQueryOn(indicatorString) {
 					}
 				});
 			});
-		//gets max value for dataset
-		getMax();
-		//Sets colors for countries
-		cColor();
-		//Set Legend Text, based on max
-		setL();
-           
-           
-           if(status != "success"){
-           	console.log("Error with country data");
-           }
+			
+			//gets max value for dataset
+			getMax();
+			//Sets colors for countries
+			cColor();
+			//Set Legend Text, based on max
+			setL();
+			//Should print out error if there is one on loading data
+			if(status != "success"){
+				console.log("Error with country data");
+			}
+		}
+	});
 
-        }
-
-    });
-    
     //call to get indicator information
     $.ajax({
         url: "http://api.worldbank.org/indicators/"+call+"?format=jsonP&prefix=Getdata&per_page=500",
