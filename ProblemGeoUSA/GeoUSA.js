@@ -55,47 +55,35 @@ var completeDataSet;
 var max=0;
 var keys;
 
+//Gets station data, draws circles and graphs
 function loadStations() {
-    d3.csv("../data/NSRDB_StationsMeta.csv",function(error,data){
-       // console.log(data);
-        data.forEach(function(d, i){
-        	//console.log(d["ST"]);
-        	lo= d["NSRDB_LON(dd)"];
+	d3.csv("../data/NSRDB_StationsMeta.csv",function(error,data){
+		data.forEach(function(d, i){
+			lo= d["NSRDB_LON(dd)"];
 			la= d["NSRDB_LAT (dd)"];
-        	
-        	var screen = projection([lo, la]);
-        	if(d["ST"] !== "PR" && d["ST"] !== "GU" && d["ST"] !== "VI" && d["STATION"] !=="MIDWAY ISLAND NAS") {
-        		//console.log(d["ST"]);
-        		/*completeDataSet.map(function(e){
-        			if(d["USAF"] == e.id){
-        				d["test"]="something";
-        			}
-        		})*/
-        		
-        		keys.forEach(function(e, j){
-        			
-        			if(completeDataSet[e].length>=1){
-        				//console.log(completeDataSet[e][0].sum);
-        				
-        				if(d["USAF"] == completeDataSet[e][0].id){
-        					//console.log("match");
-        					//console.log(completeDataSet[e][0].id);
-        					var s = parseInt(completeDataSet[e][0].sum);
-        					d.sum = s;
-        				}
-        			//d.push({"Sum":completeDataSet[e][0].sum });
-        			}
-       			 });
-        		
-        		
-        		
-        		
-        		//scale for station sizes
+			var screen = projection([lo, la]);
+			
+			//ignores stats/territories not on map
+			if(d["ST"] !== "PR" && d["ST"] !== "GU" && d["ST"] !== "VI" && d["STATION"] !=="MIDWAY ISLAND NAS") {
+				//loops through keys(station id's)..set in line 271
+				keys.forEach(function(e, j){
+				//if competeDataSet has info for this station;
+					if(completeDataSet[e].length>=1){
+						//if the stations match;
+						if(d["USAF"] == completeDataSet[e][0].id){
+							//gets and sets sum
+							var s = parseInt(completeDataSet[e][0].sum);
+							d.sum = s;
+						}
+					}
+				});
+
+				//scale for station sizes
 				var sScale = d3.scale.linear()
 					.domain([ 0, max])
 					.range([1, 4]);
-        		
-        		svg
+
+				svg
 					.append("circle")
 					.attr("class", "stations")
 					.attr("cx", screen[0])
@@ -110,94 +98,74 @@ function loadStations() {
 						return sScale(r);
 					})
 					.attr("class", function(e, i){
-						//if object has a sum, use that, else use zero
+						//if object has a sum, set class accordingly
 						if("sum" in d){
 							return "station hasData";
 						}
 						return "station";
-						
-						
 					})
 					.on("mouseover", function(e) {
-						//console.log(e);
 						d3.select(this).attr("id", "hover");
-					
-						/*var xPosition = parseFloat(e.x+10);
-						var yPosition = parseFloat(e.y) ;*/
 						//Update the tooltip position and value
-					d3.select("#tooltip")
-						.style("left", (event.pageX-10)+"px")
-						.style("top", (event.pageY+10)+"px")
-						.select("#station")
-						.text(d.STATION);
+						d3.select("#tooltip")
+							.style("left", (event.pageX-10)+"px")
+							.style("top", (event.pageY+10)+"px")
+							.select("#station")
+							.text(d.STATION);
 
-					d3.select("#value")
-						.text(d.sum);
+						d3.select("#value")
+							.text(d.sum);
 					
-					//Show the tooltip
-					d3.select("#tooltip").classed("hidden", false);
-				})
-				.on("mouseout", function(e){
-					d3.select(this)
-					.attr("id", "");
+						//Show the tooltip
+						d3.select("#tooltip")
+							.classed("hidden", false);
+					})
+					.on("mouseout", function(e){
+						d3.select(this)
+						.attr("id", "");
+
+						//Hide the tooltip
+						d3.select("#tooltip").classed("hidden", true);
+					})
+					.on("click", function(e){
+						d3.selectAll(".graph").remove();
+						
+						detailVis.append("text")
+							.attr("class", "graph")
+							.text(d.STATION)
+							.attr("x", 35)
+							.attr("y", 35)
+							.attr("fill", "black")
+							.attr("font-size", "11px");
 					
-					//Hide the tooltip
-					d3.select("#tooltip").classed("hidden", true);
-				})
-				.on("click", function(e){
-					d3.selectAll(".graph").remove();
-				
-					//var g =detailVis.append("div").attr("class", "graph")
-					
-					detailVis.append("text")
-					.attr("class", "graph")
-					.text(d.STATION)
-					.attr("x", 35)
-					.attr("y", 35)
-					.attr("fill", "black")
-					.attr("font-size", "11px");
-					
-					//get max number for range
-					var rMax=0;
-					var tMax =0;
-					var tKeys;
-					var station=[];
-					keys.forEach(function(e, j){
-        			
-        			if(completeDataSet[e].length>=1){
-        				//console.log(completeDataSet[e][0].sum);
-        				tKeys = Object.keys(completeDataSet[e][0].hourly);
-        				
-        				//get largest hourly value
-        				tKeys.forEach(function(l, m){
-        					if(completeDataSet[e][0].hourly[l] > tMax){
-        						tMax= completeDataSet[e][0].hourly[l];
-        					}
-        				});
-        				
-        				
-        				if(d["USAF"] == completeDataSet[e][0].id){
-        					console.log(completeDataSet[e][0].hourly);
-        					//station = completeDataSet[e][0].hourly;
-        					//console.log(k);
-        					tKeys.forEach(function(j, k){
-        						//console.log(completeDataSet[e][0].hourly[j]);
-        						station.push(completeDataSet[e][0].hourly[j]);
-        						if(completeDataSet[e][0].hourly[j] >= rMax){
-        							rMax = completeDataSet[e][0].hourly[j];
-        						}
-        						
-        					});
-        					/*completeDataSet[e][0].hourly.map(function(e, j){
-        						
-        					})*/
-        				}
-        			
-        			}
-       			 });
-					console.log(tMax);
-					console.log(rMax);
-					
+						//get max number for range
+						var rMax=0;
+						var tMax =0;
+						var tKeys;
+						var station=[];
+						//loop through all stations
+						keys.forEach(function(e, j){
+							if(completeDataSet[e].length>=1){
+								tKeys = Object.keys(completeDataSet[e][0].hourly);
+								//get largest hourly value for all stations
+								tKeys.forEach(function(l, m){
+									if(completeDataSet[e][0].hourly[l] > tMax){
+										tMax= completeDataSet[e][0].hourly[l];
+									}
+								});
+								
+								if(d["USAF"] == completeDataSet[e][0].id){
+									tKeys.forEach(function(j, k){
+										station.push(completeDataSet[e][0].hourly[j]);
+										//Gets largest hourly value for specific station
+										if(completeDataSet[e][0].hourly[j] >= rMax){
+											rMax = completeDataSet[e][0].hourly[j];
+										}
+									});
+								}
+							}
+					});
+
 					//Use R max, or regular max?
 					
 					var h=200;
