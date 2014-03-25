@@ -3,65 +3,63 @@
  */
 
 var margin = {
-    top: 50,
-    right: 50,
-    bottom: 50,
-    left: 50,
-    text: 10,
-    screen: 1130
+	top: 50,
+	right: 50,
+	bottom: 50,
+	left: 50,
+	text: 10,
+	screen: 1130
 };
 
 var width = 950 - margin.left - margin.right;
 var height = 700 - margin.bottom - margin.top;
 
-
-
 var bbVis = {
-    x: 100,
-    y: 10,
-    w: width - 100,
-    h: 300
+	x: 100,
+	y: 10,
+	w: width - 100,
+	h: 300
 };
 
 var dataSet = {};
 
-var svg = d3.select("#vis").append("svg").attr({
-    width: width + margin.left + margin.right,
-    height: height + margin.top + margin.bottom
-}).append("g").attr({
-        transform: "translate(" + margin.left + "," + (margin.top+50) + ")"
-    });
-    
+var svg = d3.select("#vis")
+	.append("svg").attr({
+		width: width + margin.left + margin.right,
+		height: height + margin.top + margin.bottom
+	})
+	.append("g").attr({
+		transform: "translate(" + margin.left + "," + (margin.top+50) + ")"
+	});
+
 var info = d3.select("#textLabel")
-			.append("svg")
-			.attr({
-				width: margin.screen-width,
-				height: height + margin.top + margin.bottom
-			})
-			.append("g")
-			.attr({
-				width: margin.screen-width,
-				height: height + margin.top + (margin.bottom+100)
-			})
-			.attr({
-				transform: "translate(" + margin.text + "," + margin.top + ")"
-			});
+	.append("svg")
+	.attr({
+		width: margin.screen-width,
+		height: height + margin.top + margin.bottom
+	})
+	.append("g")
+	.attr({
+		width: margin.screen-width,
+		height: height + margin.top + (margin.bottom+100)
+	})
+	.attr({
+		transform: "translate(" + margin.text + "," + margin.top + ")"
+	});
 
 // --- this is just for fun.. play arround with it iof you like :)
 var projectionMethods = [
-    {
-        name:"mercator",
-        method: d3.geo.mercator().translate([width / 2, height / 2])//.precision(.1);
-    },{
-        name:"equiRect",
-        method: d3.geo.equirectangular().translate([width / 2, height / 2])//.precision(.1);
-    },{
-        name:"stereo",
-        method: d3.geo.stereographic().translate([width / 2, height / 2])//.precision(.1);
-    }
+	{
+		name:"mercator",
+		method: d3.geo.mercator().translate([width / 2, height / 2])//.precision(.1);
+	},{
+		name:"equiRect",
+		method: d3.geo.equirectangular().translate([width / 2, height / 2])//.precision(.1);
+	},{
+		name:"stereo",
+		method: d3.geo.stereographic().translate([width / 2, height / 2])//.precision(.1);
+	}
 ];
-// --- this is just for fun.. play arround with it iof you like :)
-
 
 var actualProjectionMethod = 0;
 var colorMin = colorbrewer.Greens[3][0];
@@ -75,195 +73,191 @@ var years =[];
 var leg =[];
 var colorScale;
 
-console.log(colorMax);
-
-
-
 var path = d3.geo.path().projection(projectionMethods[0].method);
 
 //fill in years array
 for(i=2013; i>=1960; i--){
- 	years.push(parseInt(i));
- }
- 
- //fill in leg array
+	years.push(parseInt(i));
+}
+
+//fill in leg array
 for(i=0; i<=15; i++){
- 	leg.push(parseInt(i));
- }
- 
- console.log(leg);
+	leg.push(parseInt(i));
+}
 
+//legend for map
 var legend = svg.selectAll("rect")
-				.data(leg)
-				.enter()
-    			.append("rect")
-    			.attr("x", 30)
-    			.attr("y", function(d, i){
-    				return 300+(i*10);
-    			})
-   				.attr("width", 40)
-   				.attr("height", 10)
-   				.style("fill", function(d, i){
-   					console.log(i);
-   					return color(16, i)
-   				});
-   				
-   				svg.append('text')
-    			.attr("x", 80)
-    			.attr("y", 300)
-   				.attr("width", 40)
-   				.attr("height", 10)
-   				.text("0");
+	.data(leg)
+	.enter()
+	.append("rect")
+	.attr("x", 30)
+	.attr("y", function(d, i){
+		return 300+(i*10);
+	})
+	.attr("width", 40)
+	.attr("height", 10)
+	.style("fill", function(d, i){
+		return color(16, i)
+	});
 
-//Titles for Right
+//Text for min on legend
+svg.append('text')
+	.attr("x", 80)
+	.attr("y", 300)
+	.attr("width", 40)
+	.attr("height", 10)
+	.text("0");
+
+//Titles for right side
 //Adds Title
 info.append("text")
-        .attr("class", "title")
-        .text("Indicator:");
-        
+	.attr("class", "title")
+	.text("Indicator:");
+
+//Adds indicator name
 info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 5)
-        	.attr("class", "small info source")
-        	.attr("id", "iName")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 60)
-        	.append("xhtml:div")
-        	.html();
-        
+	.attr('x', 0)
+	.attr('y', 5)
+	.attr("class", "small info source")
+	.attr("id", "iName")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 60)
+	.append("xhtml:div")
+	.html();
+
 //Adds Source Title
 info.append("text")
 	.attr("class", "title")
-    .text("Source:")
-    .attr({
-    	"transform":"translate(0, 60)"
+	.text("Source:")
+	.attr({
+		"transform":"translate(0, 60)"
 	});
-	
+
 //Add source info
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 70)
-        	.attr("class", "small info source")
-        	.attr("id", "source")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 30)
-        	.append("xhtml:div")
-        	.html();
-        	
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 70)
+	.attr("class", "small info source")
+	.attr("id", "source")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 30)
+	.append("xhtml:div")
+	.html();
+
 //Add source origin
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 90)
-        	.attr("class", "small info source")
-        	.attr("id", "origin")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 60)
-        	.append("xhtml")
-        	.html();
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 90)
+	.attr("class", "small info source")
+	.attr("id", "origin")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 60)
+	.append("xhtml")
+	.html();
 
 //Adds Notes Title
 info.append("text")
 	.attr("class", "title")
-    .text("Notes:")
-    .attr({
-    	"transform":"translate(0, 167)"
+	.text("Notes:")
+	.attr({
+		"transform":"translate(0, 167)"
 	});
-	
+
 //Add source Notes
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 170)
-        	.attr("class", "small info source")
-        	.attr("id", "notes")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 145)
-        	.append("xhtml")
-        	.html();
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 170)
+	.attr("class", "small info source")
+	.attr("id", "notes")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 145)
+	.append("xhtml")
+	.html();
 
 //Adds Country Titles
 info.append("text")
 	.attr("class", "title")
-    .text("Country:")
-    .attr({
-    	"transform":"translate(0, 330)"
+	.text("Country:")
+	.attr({
+		"transform":"translate(0, 330)"
 	});
-	
+
 //Add country name
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 340)
-        	.attr("class", "small info country")
-        	.attr("id", "cInfo")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:div")
-        	.html();
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 340)
+	.attr("class", "small info country")
+	.attr("id", "cInfo")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml:div")
+	.html();
 
 //add country capital
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 365)
-        	.attr("class", "small info country")
-        	.attr("id", "cap")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:div")
-        	.html();
-        	
-        	//add country region
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 385)
-        	.attr("class", "small info country")
-        	.attr("id", "reg")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:div")
-        	.html();
-        	
-        	//add country income
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 405)
-        	.attr("class", "small info country")
-        	.attr("id", "inco")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:div")
-        	.html();
-        	
-        	//add country lending
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 425)
-        	.attr("class", "small info country")
-        	.attr("id", "lend")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:div")
-        	.html();
-			
-			//add country lat
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 445)
-        	.attr("class", "small info country")
-        	.attr("id", "lat")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:div")
-        	.html();
-        	
-        	//add country long
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 465)
-        	.attr("class", "small info country")
-        	.attr("id", "lon")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml")
-        	.html();
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 365)
+	.attr("class", "small info country")
+	.attr("id", "cap")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml:div")
+	.html();
+
+//add country region
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 385)
+	.attr("class", "small info country")
+	.attr("id", "reg")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml:div")
+	.html();
+
+//add country income
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 405)
+	.attr("class", "small info country")
+	.attr("id", "inco")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml:div")
+	.html();
+
+//add country lending
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 425)
+	.attr("class", "small info country")
+	.attr("id", "lend")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml:div")
+	.html();
+
+//add country lat
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 445)
+	.attr("class", "small info country")
+	.attr("id", "lat")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml:div")
+	.html();
+
+//add country long
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 465)
+	.attr("class", "small info country")
+	.attr("id", "lon")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml")
+	.html();
 
 
 function runAQueryOn(indicatorString) {
