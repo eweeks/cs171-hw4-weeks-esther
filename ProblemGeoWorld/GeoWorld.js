@@ -302,94 +302,61 @@ function runAQueryOn(indicatorString) {
 		}
 	});
 
-    //call to get indicator information
-    $.ajax({
-        url: "http://api.worldbank.org/indicators/"+call+"?format=jsonP&prefix=Getdata&per_page=500",
-        jsonpCallback:'getdata',
-        dataType:'jsonp',
-        success: function (data, status){
-        	//console.log(data);
-        	
-			/*//Add Indicator name
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 5)
-        	.attr("class", "small info")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 60)
-        	.append("xhtml:div")
-        	.attr("id", "iName")
-        	.html(data[1][0].name);*/
-        	
-        	d3.select("#iName").html(data[1][0].name);
-        	d3.select("#source").html(data[1][0].source.value);
-        	d3.select("#origin").html(data[1][0].sourceOrganization);
-        	d3.select("#notes").html(data[1][0].sourceNote);
-        	
+	//call to get indicator information
+	$.ajax({
+		url: "http://api.worldbank.org/indicators/"+call+"?format=jsonP&prefix=Getdata&per_page=500",
+		jsonpCallback:'getdata',
+		dataType:'jsonp',
+		success: function (data, status){
+			//sets indicator info values on right of screen
+			d3.select("#iName").html(data[1][0].name);
+			d3.select("#source").html(data[1][0].source.value);
+			d3.select("#origin").html(data[1][0].sourceOrganization);
+			d3.select("#notes").html(data[1][0].sourceNote);
+		}
+	});
+}//end runAQueryOn
 
-			/*//Add country name
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 340)
-        	.attr("class", "small info")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:div")
-        	.attr("id", "cInfo")
-        	.html();*/
-        	
-			
-			
-        }
-    });
-
-
-}
-
-//runAQueryOn();
-//initVis;
-
+//Gets Max value for dataset
 function getMax(){
-	 //Might be able to move this up into prev function
-           c.map(function(l, m){
-           	//if(l !== null){
-				if(parseInt(l.indicator.value) > max){
-					max=parseInt(l.indicator.value);
-				}
-			//}
-           })
-        return max;
+	c.map(function(l, m){
+		if(parseInt(l.indicator.value) > max){
+			max=parseInt(l.indicator.value);
+		}
+	})
+	return max;
 }
 
-
+//Scale for color 
 function color(m, number){
-	//var m = m;
-	 colorScale = d3.scale.linear().clamp([true])
-					.domain([ 0, m ])
-					.range([colorMin, colorMax]);
+	colorScale = d3.scale.linear().clamp([true])
+		.domain([ 0, m ])
+		.range([colorMin, colorMax]);
 	return colorScale(number);
 };
 
+//Function for updating country
 function cColor(){
-		//sets countries fill
-		svg.selectAll(".country")
-			.attr("fill", function(d){
-				var r;
-				var t =0;
-				r ="grey";
-				c.map(function(l, m){
-						if(l.id == d.id){
-							var m = getMax();
-							var l = l.indicator.value;
-							if(l !== null){
-								r =color(m, l);
-							}
-						}
-				});
-				return r;
+	//sets countries fill
+	svg.selectAll(".country")
+		.attr("fill", function(d){
+			var r;
+			var t =0;
+			r ="grey";
+			c.map(function(l, m){
+				if(l.id == d.id){
+					var m = getMax();
+					var l = l.indicator.value;
+					if(l !== null){
+						r =color(m, l);
+					}
+				}
 			});
+			return r;
+		});
 }
 
+//function sets max text on legend
 function setL(){
 	//Legend
 	svg.append('text')
@@ -401,136 +368,119 @@ function setL(){
 		.text(max);
 }
 
-
+//function to initiate the vis. 
 var initVis = function(error, indicators, world, countries){
-   // console.log(indicators);
-    //console.log(world);
-   // console.log(countries[1].id);
-    c = countries;
-    indi = indicators;
-    console.log(c);
-    //Sets up dropdown for indicators
-    var dropdown = d3.select("#selector")
+	c = countries;
+	indi = indicators;
+	
+	//Sets up dropdown for indicators
+	var dropdown = d3.select("#selector")
 		.append("select")
-    	.attr("id", "select")
-    	.on("change", function(d){
-       			call = $( "#select" ).val();
-				//console.log(call);
-				d3.selectAll(".clicked").classed({'clicked': false});
-				runAQueryOn();
-       	});
+		.attr("id", "select")
+		.on("change", function(d){
+			call = $( "#select" ).val();
+			d3.selectAll(".clicked").classed({'clicked': false});
+			runAQueryOn();
+		});
+		
 	//adds options to dropdown selector
 	var options = dropdown.selectAll("option")
-           	.data(indi)
-         	.enter()
-           	.append("option")
-           	.text(function (d) { return d.IndicatorName; })
-       		.attr("value", function (d) { return d.IndicatorCode; });
-       		
-       		
+		.data(indi)
+		.enter()
+		.append("option")
+		.text(function (d){ 
+			return d.IndicatorName; 
+		})
+		.attr("value", function (d){ 
+			return d.IndicatorCode;
+		});
+
 	call = $( "#select" ).val();
-	
 	
 	//Sets up dropdown for year, selectorYear
 	var dropYear= d3.select("#selectorYear")
 		.append("select")
-    	.attr("id", "selectY")
-    	.on("change", function(d){
-       			date = $("#selectY").val();
-				//console.log("Change "+date);
-				d3.selectAll(".clicked").classed({'clicked': false});
-				d3.selectAll(".country").html("");
-				d3.selectAll(".source").html("");
-				runAQueryOn();
-       	});
-       	
+		.attr("id", "selectY")
+		.on("change", function(d){
+			date = $("#selectY").val();
+			d3.selectAll(".clicked").classed({'clicked': false});
+			d3.selectAll(".country").html("");
+			d3.selectAll(".source").html("");
+			runAQueryOn();
+		});
+
 	//adds options to dropdown selector for year
 	var sYears = dropYear.selectAll("option")
-           	.data(years)
-         	.enter()
-           	.append("option")
-           	.text(function (d) { return d; })
-       		.attr("value", function (d) { return d; });
-    //select values on load that have easy to view data   		
-    $('#selectY').val(2010);
-    $("#select").val("AG.LND.ARBL.HA.PC");
-       		
-    date = $( "#selectY" ).val();
-    //console.log( $( "#selectY" ).val()); 
-    
-    runAQueryOn();
-    
-  svg.selectAll("path")
-  .data(world.features)
-  .enter().append("path")
-  .attr("d", path)
-  .attr("class", "country")
-  .attr("id", function(d, i){
-  	return d.id;
-  })
-  .attr("fill", "grey")
-  .on("click", function(d, i){
-  	d3.selectAll(".clicked").classed({'clicked': false});
-  //var k = $( this ).css( "fill" );
-  d3.selectAll(".country").html("");
-  	
-  	d3.select(this).classed({'clicked': true});
-  	//console.log(d.id);
-  	c.map(function (e){
-  		if(d.id == e.id){
-  			console.log(e.id+" "+d.id);
-  			d3.select("#cInfo").html(e.name);
-  			d3.select("#cap").html("Capital: "+e.about.capital);
-  			d3.select("#reg").html("Region: "+e.about.region);
-  			d3.select("#inco").html("Income: "+e.about.income);
-  			d3.select("#lend").html("Lending: "+e.about.lending);
-  			d3.select("#lat").html("Lat: "+e.about.lat);
-  			d3.select("#lon").html("Long: "+e.about.long);
-  			
-			
-  		}
-  	})
-  });
+		.data(years)
+		.enter()
+		.append("option")
+		.text(function (d){
+			return d;
+		})
+		.attr("value", function (d){
+			return d;
+		});
 
+	//select values on load that show good range of data
+	$('#selectY').val(2010);
+	$("#select").val("AG.LND.ARBL.HA.PC");
 
+	date = $( "#selectY" ).val();
+	runAQueryOn();
 
+	//Draws out paths for map
+	svg.selectAll("path")
+		.data(world.features)
+		.enter().append("path")
+		.attr("d", path)
+		.attr("class", "country")
+		.attr("id", function(d, i){
+			return d.id;
+		})
+		.attr("fill", "grey")
+		.on("click", function(d, i){
+			d3.selectAll(".clicked").classed({'clicked': false});
+			d3.selectAll(".country").html("");
+			d3.select(this).classed({'clicked': true});
+			//selects country of clicked id, displays country data on right of the screen
+			c.map(function (e){
+				if(d.id == e.id){
+					d3.select("#cInfo").html(e.name);
+					d3.select("#cap").html("Capital: "+e.about.capital);
+					d3.select("#reg").html("Region: "+e.about.region);
+					d3.select("#inco").html("Income: "+e.about.income);
+					d3.select("#lend").html("Lending: "+e.about.lending);
+					d3.select("#lat").html("Lat: "+e.about.lat);
+					d3.select("#lon").html("Long: "+e.about.long);
 
-}
-
+				}
+			})
+		});
+}//end initVis
 
 // very cool queue function to make multiple calls.. 
-// see 
 queue()
-    .defer(d3.csv,"../data/worldBank_indicators.csv")
-    .defer(d3.json,"../data/world_data.json")
-    .defer(d3.json,"../data/WorldBankCountries2.json")
-    .await(initVis);
+	.defer(d3.csv,"../data/worldBank_indicators.csv")
+	.defer(d3.json,"../data/world_data.json")
+	.defer(d3.json,"../data/WorldBankCountries2.json")
+	.await(initVis);
 
 
-// just for fun 
+// just for fun changing projection
 var textLabel = svg.append("text").text(projectionMethods[actualProjectionMethod].name).attr({
-    "transform":"translate(-40,-30)"
+	"transform":"translate(-40,-30)"
 })
 
 var changePro = function(){
-    actualProjectionMethod = (actualProjectionMethod+1) % (projectionMethods.length);
+	actualProjectionMethod = (actualProjectionMethod+1) % (projectionMethods.length);
 
-    textLabel.text(projectionMethods[actualProjectionMethod].name);
-    path= d3.geo.path().projection(projectionMethods[actualProjectionMethod].method);
-    svg.selectAll(".country").transition().duration(750).attr("d",path);
+	textLabel.text(projectionMethods[actualProjectionMethod].name);
+	path= d3.geo.path().projection(projectionMethods[actualProjectionMethod].method);
+	svg.selectAll(".country").transition().duration(750).attr("d",path);
 };
 
 d3.select("body").append("button").text("changePro").on({
-    "click":changePro
+	"click":changePro
 })
-
-
-
-
-
-
-//})
-
-
 
 
