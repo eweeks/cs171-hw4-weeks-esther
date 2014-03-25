@@ -3,10 +3,10 @@
  */
 
 var margin = {
-    top: 50,
-    right: 50,
-    bottom: 50,
-    left: 50
+	top: 50,
+	right: 50,
+	bottom: 50,
+	left: 50
 };
 
 var width = 1060 - margin.left - margin.right;
@@ -14,59 +14,46 @@ var height = 800 - margin.bottom - margin.top;
 var centered;
 
 var bbVis = {
-    x: 100,
-    y: 10,
-    w: width - 100,
-    h: 300
+	x: 100,
+	y: 10,
+	w: width - 100,
+	h: 300
 };
 
 var detailVis = d3.select("#detailVis").append("svg").attr({
-    width:350,
-    height:300
+	width:350,
+	height:300
 })
 
 var canvas = d3.select("#vis").append("svg").attr({
-    width: width + margin.left + margin.right,
-    height: height + margin.top + margin.bottom
-    });
-    
+	width: width + margin.left + margin.right,
+	height: height + margin.top + margin.bottom
+	});
+
 var title = canvas.append("text")
-					.attr("class", "title")
-					.text("Solar Radiation Data")
-					.attr("x", bbVis.w/2)
-					.attr("y", 40);
-					
+	.attr("class", "title")
+	.text("Solar Radiation Data")
+	.attr("x", bbVis.w/2)
+	.attr("y", 40);
+	
 var sub = canvas.append("text")
-					.attr("class", "sub")
-					.text("2003-2004")
-					.attr("x", (bbVis.w/2)+50)
-					.attr("y", 70);
+	.attr("class", "sub")
+	.text("2003-2004")
+	.attr("x", (bbVis.w/2)+50)
+	.attr("y", 70);
 
-var svg = canvas.append("g").attr({
-        transform: "translate(" + margin.left + "," + margin.top + ")"
-    });
+var svg = canvas.append("g")
+	.attr({
+		transform: "translate(" + margin.left + "," + margin.top + ")"
+	});
 
-var projection = d3.geo.albersUsa().translate([width / 2, height / 2]);//.precision(.1);
+var projection = d3.geo.albersUsa().translate([width / 2, height / 2]);
 var path = d3.geo.path().projection(projection);
-
 
 var dataSet = {};
 var completeDataSet;
 var max=0;
 var keys;
-
-//Show the tooltip
-//d3.select("#tooltip").classed("hidden", false);
-
-/*var lon= -71.06;
-var lat= 42.36;
-
-var screencoord = projection([lon, lat]);
-
-svg.append("circle")
-	.attr("cx", screencoord[0])
-	.attr("cy", screencoord[1])
-	.attr("r", 5);*/
 
 function loadStations() {
     d3.csv("../data/NSRDB_StationsMeta.csv",function(error,data){
@@ -318,8 +305,13 @@ d3.json("../data/us-named.json", function(error, data) {
     var usMap = topojson.feature(data,data.objects.states).features
     //console.log(usMap);
 
-    svg.selectAll(".country").data(usMap).enter().append("path").attr("class", "country").attr("d", path).on("click", clicked);
-    // see also: http://bl.ocks.org/mbostock/4122298
+    svg.selectAll(".country")
+    	.data(usMap)
+    	.enter()
+    	.append("path")
+    	.attr("class", "country")
+    	.attr("d", path)
+    	.on("click", clicked);
 
     loadStats();
 });
