@@ -71,6 +71,8 @@ var years =[];
 var leg =[];
 var colorScale;
 
+console.log(colorMax);
+
 
 
 var path = d3.geo.path().projection(projectionMethods[0].method);
@@ -98,7 +100,8 @@ var legend = svg.selectAll("rect")
    				.attr("width", 40)
    				.attr("height", 10)
    				.style("fill", function(d, i){
-   					return color(15, i)
+   					console.log(i);
+   					return color(16, i)
    				});
    				
    				svg.append('text')
@@ -381,9 +384,10 @@ function getMax(){
 }
 
 
-function color(max, number){
-	 colorScale = d3.scale.linear()
-					.domain([ 0, max ])
+function color(m, number){
+	//var m = m;
+	 colorScale = d3.scale.linear().clamp([true])
+					.domain([ 0, m ])
 					.range([colorMin, colorMax]);
 	return colorScale(number);
 };
