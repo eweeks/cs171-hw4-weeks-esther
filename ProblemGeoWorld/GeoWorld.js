@@ -259,79 +259,55 @@ info.append('foreignObject')
 	.append("xhtml")
 	.html();
 
-
+//function to make calls and get data for map, indicator info
 function runAQueryOn(indicatorString) {
-
+	//values for selected items on dropdown
 	call = $( "#select" ).val();
 	date = $( "#selectY" ).val();
 	
-	//remove any info already there
-	//d3.selectAll(".source").html("");
+	//resets max value on legend
 	d3.selectAll("#leg").remove();
-	//date=2010;
-	//console.log(date);
-    $.ajax({
-        url: "http://api.worldbank.org/countries/all/indicators/"+call+"?format=jsonP&prefix=Getdata&date="+date+"&per_page=500", //do something here
-        jsonpCallback:'getdata',
-        dataType:'jsonp',
-        success: function (data, status){
-           //console.log(data[1]);
-           //console.log(data);
-          //var min =0;
-          max =0;
-           data[1].map(function(d, i){
-           		//console.log(d.country.id);
+
+//ajax call for data of selected indicators/years
+	$.ajax({
+		url: "http://api.worldbank.org/countries/all/indicators/"+call+"?format=jsonP&prefix=Getdata&date="+date+"&per_page=500", //do something here
+		jsonpCallback:'getdata',
+		dataType:'jsonp',
+		success: function (data, status){
+			max =0;
+			//data[1] has the info
+			data[1].map(function(d, i){
+				//maps to country info
 				c.map(function(e, j){
 					if(e !== null){
-						//console.log(e.iso);
-					  	if(e.iso == d.country.id){
-							//console.log("Match "+e.iso+" "+d.country.id);
+						//if country id's match, set value and id
+						if(e.iso == d.country.id){
 							e.indicator.value=d.value;
 							e.indicator.id=d.indicator.id;
-							
-							
 						}
 					}
-						
 				});
-           });
-           getMax();
-           
-           svg.selectAll(".country")
-            .attr("fill", function(d, i){
-  				//console.log(c);
-  				var r;
-  				var t =0;
-  				r ="grey";
-  				c.map(function(l, m){
-  					//console.log(l);
-           			//if(l !== null){
+			});
+		//gets max value for dataset
+		getMax();
+		
+		//sets countries fill
+		svg.selectAll(".country")
+			.attr("fill", function(d){
+				var r;
+				var t =0;
+				r ="grey";
+				c.map(function(l, m){
 						if(l.id == d.id){
-							//console.log(parseInt(l.indicator.value));
 							var m = getMax();
 							var l = l.indicator.value;
 							if(l !== null){
 								r =color(m, l);
 							}
-							//console.log(color(m, l));
-							//r =color(m, l);
 						}
-						//return "red";
-					//}
-					//if(l == null){
-					//	t=t+1;
-					//	console.log("null is "+t);
-						//r ="grey";
-					//}
-						//r ="grey";
-					
-        		});
-        		/*if(d.id =="AFG"){
-        			return "blue";
-        		}*/
-        			//console.log(r);
-  					return r;
-  			});
+				});
+				return r;
+			});
            
            //console.log(max);
           // console.log(getMax());
