@@ -290,22 +290,10 @@ function runAQueryOn(indicatorString) {
 			});
 		//gets max value for dataset
 		getMax();
+		//Sets colors for countries
 		cColor();
-		
-
-           
-           //console.log(max);
-          // console.log(getMax());
-           //console.log(color(max, 59));
-           //Legend                          
-   				
-   				svg.append('text')
-    			.attr("x", 80)
-    			.attr("y", 460)
-    			.attr("id", "leg")
-   				.attr("width", 40)
-   				.attr("height", 10)
-   				.text(max);
+		//Set Legend Text, based on max
+		setL();
            
            
            if(status != "success"){
@@ -402,6 +390,17 @@ function cColor(){
 				});
 				return r;
 			});
+}
+
+function setL(){
+	//Legend
+	svg.append('text')
+		.attr("x", 80)
+		.attr("y", 460)
+		.attr("id", "leg")
+		.attr("width", 40)
+		.attr("height", 10)
+		.text(max);
 }
 
 
