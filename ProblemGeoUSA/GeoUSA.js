@@ -137,8 +137,76 @@ function loadStations() {
 							.attr("y", 35)
 							.attr("fill", "black")
 							.attr("font-size", "11px");
-					
-						//get max number for range
+						graph(d["USAF"]);
+						
+					});
+			}
+		})
+	});
+}
+
+//Loads data calls, loadStations
+function loadStats() {
+	d3.json("../data/reducedMonthStationHour2003_2004.json", function(error, data){
+		completeDataSet= data;
+		//sets keys, array of station names
+		keys = Object.keys(data);
+		keys.forEach(function(d, i){
+			//if data has info
+			if(data[d].length>=1){
+				//gets max sum for all stations
+				if(data[d][0].sum > max){
+					max=data[d][0].sum;
+				}
+			}
+		});
+		loadStations();
+	});
+}
+
+//Data for map
+d3.json("../data/us-named.json", function(error, data) {
+	var usMap = topojson.feature(data,data.objects.states).features
+	svg.selectAll(".country")
+		.data(usMap)
+		.enter()
+		.append("path")
+		.attr("class", "country")
+		.attr("d", path)
+		.on("click", clicked);
+		
+	loadStats();
+});
+
+//function for centering visual
+function clicked(d) {
+	var centroid = path.centroid(d);
+	//If the map wasn't already centered on the area clicked, it centers it
+	if (d && centered !== d) {
+		var centroid = path.centroid(d);
+		x = centroid[0];
+		y = centroid[1];
+		k = 4; //this controls how much it zooms
+		centered = d;
+	} else {
+		x = width / 2;
+		y = height / 2;
+		k = 1;
+		centered = null;
+	}
+
+	svg.selectAll("path")
+		.classed("active", centered && function(d) { return d === centered; });
+		
+	svg.transition()
+		.duration(750)
+		.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+		.style("stroke-width", 1.5 / k + "px");
+}
+
+//function for drawing graph
+function graph(usaf){
+	//get max number for range
 						var rMax=0;
 						var tMax =0;
 						var tKeys;
@@ -154,7 +222,7 @@ function loadStations() {
 									}
 								});
 								
-								if(d["USAF"] == completeDataSet[e][0].id){
+								if(usaf == completeDataSet[e][0].id){
 									tKeys.forEach(function(j, k){
 										station.push(completeDataSet[e][0].hourly[j]);
 										//Gets largest hourly value for specific station
@@ -228,68 +296,6 @@ function loadStations() {
 								return (h-yScale(d)); 
 							})
 							.attr("width",  xScale.rangeBand())
-					});
-			}
-		})
-	});
-}
 
-//Loads data calls, loadStations
-function loadStats() {
-	d3.json("../data/reducedMonthStationHour2003_2004.json", function(error, data){
-		completeDataSet= data;
-		//sets keys, array of station names
-		keys = Object.keys(data);
-		keys.forEach(function(d, i){
-			//if data has info
-			if(data[d].length>=1){
-				//gets max sum for all stations
-				if(data[d][0].sum > max){
-					max=data[d][0].sum;
-				}
-			}
-		});
-		loadStations();
-	});
-}
-
-//Data for map
-d3.json("../data/us-named.json", function(error, data) {
-	var usMap = topojson.feature(data,data.objects.states).features
-	svg.selectAll(".country")
-		.data(usMap)
-		.enter()
-		.append("path")
-		.attr("class", "country")
-		.attr("d", path)
-		.on("click", clicked);
-		
-	loadStats();
-});
-
-//function for centering visual
-function clicked(d) {
-	var centroid = path.centroid(d);
-	//If the map wasn't already centered on the area clicked, it centers it
-	if (d && centered !== d) {
-		var centroid = path.centroid(d);
-		x = centroid[0];
-		y = centroid[1];
-		k = 4; //this controls how much it zooms
-		centered = d;
-	} else {
-		x = width / 2;
-		y = height / 2;
-		k = 1;
-		centered = null;
-	}
-
-	svg.selectAll("path")
-		.classed("active", centered && function(d) { return d === centered; });
-		
-	svg.transition()
-		.duration(750)
-		.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-		.style("stroke-width", 1.5 / k + "px");
 }
 
