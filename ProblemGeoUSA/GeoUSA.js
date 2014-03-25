@@ -137,7 +137,8 @@ function loadStations() {
 							.attr("y", 35)
 							.attr("fill", "black")
 							.attr("font-size", "11px");
-						graph(d["USAF"]);
+							//calls graph function
+							graph(d["USAF"]);
 						
 					});
 			}
@@ -207,95 +208,96 @@ function clicked(d) {
 //function for drawing graph
 function graph(usaf){
 	//get max number for range
-						var rMax=0;
-						var tMax =0;
-						var tKeys;
-						var station=[];
-						//loop through all stations
-						keys.forEach(function(e, j){
-							if(completeDataSet[e].length>=1){
-								tKeys = Object.keys(completeDataSet[e][0].hourly);
-								//get largest hourly value for all stations
-								tKeys.forEach(function(l, m){
-									if(completeDataSet[e][0].hourly[l] > tMax){
-										tMax= completeDataSet[e][0].hourly[l];
-									}
-								});
-								
-								if(usaf == completeDataSet[e][0].id){
-									tKeys.forEach(function(j, k){
-										station.push(completeDataSet[e][0].hourly[j]);
-										//Gets largest hourly value for specific station
-										if(completeDataSet[e][0].hourly[j] >= rMax){
-											rMax = completeDataSet[e][0].hourly[j];
-										}
-									});
-								}
-							}
-						});
-						var h=200;
-						var w =300;
-						var padding =50;
+	var rMax=0;
+	var tMax =0;
+	var tKeys;
+	var station=[];
 
-						//yScale
-						//Use max for all stations, or one? Using al stations; tMax
-						var yScale = d3.scale.linear().domain([tMax, 0]).range([padding, h]);
+	//loop through all stations
+	keys.forEach(function(e, j){
+		if(completeDataSet[e].length>=1){
+			tKeys = Object.keys(completeDataSet[e][0].hourly);
+			//get largest hourly value for all stations
+			tKeys.forEach(function(l, m){
+				if(completeDataSet[e][0].hourly[l] > tMax){
+					tMax= completeDataSet[e][0].hourly[l];
+				}
+			});
+								
+			if(usaf == completeDataSet[e][0].id){
+				tKeys.forEach(function(j, k){
+					station.push(completeDataSet[e][0].hourly[j]);
+					//Gets largest hourly value for specific station
+					if(completeDataSet[e][0].hourly[j] >= rMax){
+						rMax = completeDataSet[e][0].hourly[j];
+					}
+				});
+			}
+		}
+	});
+	var h=200;
+	var w =300;
+	var padding =50;
+
+	//yScale
+	//Use max for all stations, or one? Using al stations; tMax
+	var yScale = d3.scale.linear().domain([tMax, 0]).range([padding, h]);
 					
-						//yAxis
-						yAxis = d3.svg.axis()
-							.scale(yScale)
-							.orient("left")
-							.ticks(5);
-						
-						//Draw Y axis
-						detailVis.append("g")
-							.attr("class", "axis line graph")
-							.attr("transform", "translate(80, 0)")
-							.call(yAxis)
-						
-						//xScale 
-						var xScale = d3.scale.ordinal()
-							.domain(tKeys.map(function (d) {return d; }))
-							.rangeRoundBands([padding, w], .1);
-						
-						//xScale 
-						var xScale2 = d3.scale.ordinal()
-							.domain(tKeys.map(function (d) {return d; }))
-							.rangeRoundBands([padding, w], .1);
-						
-						//xAxis
-						var xAxis = d3.svg.axis()
-							.scale(xScale)
-							.orient("bottom");
-					
-						//Add X axis
-						var axis = detailVis.append("g")
-							.attr("class", "axis line graph")
-							.attr("transform", "translate(30,"+h+")") 
-							.call(xAxis);
-					
-						//rotates text to angle
-						axis.selectAll("text")
-							.attr("transform", function(d) {
-								return "rotate(-80)translate(-40, -11)";
-							});
-						
-						//Draw Bars
-						detailVis.selectAll(".bar")
-							.data(station)
-							.enter().append("rect")
-							.attr("class", "bar graph")
-							.attr("x",  function(d, i) {
-								return xScale(tKeys[i]);
-							})
-							.attr("transform", "translate(10, 0)") 
-							.attr("y", function(d) { 
-								return yScale(d);
-							})
-							.attr("height", function(d) { 
-								return (h-yScale(d)); 
-							})
-							.attr("width",  xScale.rangeBand())
+	//yAxis
+	yAxis = d3.svg.axis()
+		.scale(yScale)
+		.orient("left")
+		.ticks(5);
+		
+	//Draw Y axis
+	detailVis.append("g")
+		.attr("class", "axis line graph")
+		.attr("transform", "translate(80, 0)")
+		.call(yAxis)
+		
+	//xScale 
+	var xScale = d3.scale.ordinal()
+		.domain(tKeys.map(function (d) {return d; }))
+		.rangeRoundBands([padding, w], .1);
+	
+	//xScale 
+	var xScale2 = d3.scale.ordinal()
+		.domain(tKeys.map(function (d) {return d; }))
+		.rangeRoundBands([padding, w], .1);
+		
+	//xAxis
+	var xAxis = d3.svg.axis()
+		.scale(xScale)
+		.orient("bottom");
+	
+	//Add X axis
+	var axis = detailVis.append("g")
+		.attr("class", "axis line graph")
+		.attr("transform", "translate(30,"+h+")") 
+		.call(xAxis);
+	
+	//rotates text to angle
+	axis.selectAll("text")
+		.attr("transform", function(d) {
+			return "rotate(-80)translate(-40, -11)";
+		});
+	
+	//Draw Bars
+	detailVis.selectAll(".bar")
+		.data(station)
+		.enter().append("rect")
+		.attr("class", "bar graph")
+		.attr("x",  function(d, i) {
+			return xScale(tKeys[i]);
+		})
+		.attr("transform", "translate(10, 0)") 
+		.attr("y", function(d) { 
+			return yScale(d);
+		})
+		.attr("height", function(d) { 
+			return (h-yScale(d)); 
+		})
+		.attr("width",  xScale.rangeBand())
 
 }
 
