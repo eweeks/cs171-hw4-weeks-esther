@@ -290,24 +290,9 @@ function runAQueryOn(indicatorString) {
 			});
 		//gets max value for dataset
 		getMax();
+		cColor();
 		
-		//sets countries fill
-		svg.selectAll(".country")
-			.attr("fill", function(d){
-				var r;
-				var t =0;
-				r ="grey";
-				c.map(function(l, m){
-						if(l.id == d.id){
-							var m = getMax();
-							var l = l.indicator.value;
-							if(l !== null){
-								r =color(m, l);
-							}
-						}
-				});
-				return r;
-			});
+
            
            //console.log(max);
           // console.log(getMax());
@@ -399,6 +384,25 @@ function color(m, number){
 	return colorScale(number);
 };
 
+function cColor(){
+		//sets countries fill
+		svg.selectAll(".country")
+			.attr("fill", function(d){
+				var r;
+				var t =0;
+				r ="grey";
+				c.map(function(l, m){
+						if(l.id == d.id){
+							var m = getMax();
+							var l = l.indicator.value;
+							if(l !== null){
+								r =color(m, l);
+							}
+						}
+				});
+				return r;
+			});
+}
 
 
 var initVis = function(error, indicators, world, countries){
