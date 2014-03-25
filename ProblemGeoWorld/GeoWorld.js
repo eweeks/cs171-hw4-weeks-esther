@@ -40,6 +40,10 @@ var info = d3.select("#textLabel")
 			})
 			.append("g")
 			.attr({
+				width: margin.screen-width,
+				height: height + margin.top + (margin.bottom+100)
+			})
+			.attr({
 				transform: "translate(" + margin.text + "," + margin.top + ")"
 			});
 
@@ -111,6 +115,155 @@ var legend = svg.selectAll("rect")
    				.attr("height", 10)
    				.text("0");
 
+//Titles for Right
+//Adds Title
+info.append("text")
+        .attr("class", "title")
+        .text("Indicator:");
+        
+info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 5)
+        	.attr("class", "small info source")
+        	.attr("id", "iName")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 60)
+        	.append("xhtml:div")
+        	.html();
+        
+//Adds Source Title
+info.append("text")
+	.attr("class", "title")
+    .text("Source:")
+    .attr({
+    	"transform":"translate(0, 60)"
+	});
+	
+//Add source info
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 70)
+        	.attr("class", "small info source")
+        	.attr("id", "source")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 30)
+        	.append("xhtml:div")
+        	.html();
+        	
+//Add source origin
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 90)
+        	.attr("class", "small info source")
+        	.attr("id", "origin")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 60)
+        	.append("xhtml")
+        	.html();
+
+//Adds Notes Title
+info.append("text")
+	.attr("class", "title")
+    .text("Notes:")
+    .attr({
+    	"transform":"translate(0, 167)"
+	});
+	
+//Add source Notes
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 170)
+        	.attr("class", "small info source")
+        	.attr("id", "notes")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 145)
+        	.append("xhtml")
+        	.html();
+
+//Adds Country Titles
+info.append("text")
+	.attr("class", "title")
+    .text("Country:")
+    .attr({
+    	"transform":"translate(0, 330)"
+	});
+	
+//Add country name
+        	info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 340)
+        	.attr("class", "small info country")
+        	.attr("id", "cInfo")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:div")
+        	.html();
+
+//add country capital
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 365)
+        	.attr("class", "small info country")
+        	.attr("id", "cap")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:div")
+        	.html();
+        	
+        	//add country region
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 385)
+        	.attr("class", "small info country")
+        	.attr("id", "reg")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:div")
+        	.html();
+        	
+        	//add country income
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 405)
+        	.attr("class", "small info country")
+        	.attr("id", "inco")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:div")
+        	.html();
+        	
+        	//add country lending
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 425)
+        	.attr("class", "small info country")
+        	.attr("id", "lend")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:div")
+        	.html();
+			
+			//add country lat
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 445)
+        	.attr("class", "small info country")
+        	.attr("id", "lat")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:div")
+        	.html();
+        	
+        	//add country long
+			info.append('foreignObject')
+        	.attr('x', 0)
+			.attr('y', 465)
+        	.attr("class", "small info country")
+        	.attr("id", "lon")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml")
+        	.html();
 
 
 function runAQueryOn(indicatorString) {
@@ -119,7 +272,7 @@ function runAQueryOn(indicatorString) {
 	date = $( "#selectY" ).val();
 	
 	//remove any info already there
-	d3.selectAll(".info").remove();
+	//d3.selectAll(".source").html("");
 	d3.selectAll("#leg").remove();
 	//date=2010;
 	//console.log(date);
@@ -215,151 +368,35 @@ function runAQueryOn(indicatorString) {
         dataType:'jsonp',
         success: function (data, status){
         	//console.log(data);
-        	//Adds Title
-        	info.append("text")
-        	.attr("class", "title")
-        	.text("Indicator:");
         	
-			//Add Indicator name
+			/*//Add Indicator name
         	info.append('foreignObject')
         	.attr('x', 0)
 			.attr('y', 5)
         	.attr("class", "small info")
         	.attr('width', margin.screen-width-margin.text)
 			.attr('height', 60)
-        	.append("xhtml:body")
-        	.html(data[1][0].name);
+        	.append("xhtml:div")
+        	.attr("id", "iName")
+        	.html(data[1][0].name);*/
         	
-        	//Adds Source Title
-        	info.append("text")
-        	.attr("class", "title")
-        	.text("Source:")
-        	.attr({
-    			"transform":"translate(0, 60)"
-			})
+        	d3.select("#iName").html(data[1][0].name);
+        	d3.select("#source").html(data[1][0].source.value);
+        	d3.select("#origin").html(data[1][0].sourceOrganization);
+        	d3.select("#notes").html(data[1][0].sourceNote);
         	
-        	//Add source info
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 70)
-        	.attr("class", "small info")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 30)
-        	.append("xhtml:body")
-        	.html(data[1][0].source.value);
-        	
-        	//Add source organ
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 90)
-        	.attr("class", "small info")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 60)
-        	.append("xhtml:body")
-        	.html(data[1][0].sourceOrganization);
-        	
-        	//Adds Notes Title
-        	info.append("text")
-        	.attr("class", "title")
-        	.text("Notes:")
-        	.attr({
-    			"transform":"translate(0, 167)"
-			})
-        	
-        	//Add source Notes
-        	info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 170)
-        	.attr("class", "small info")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 145)
-        	.append("xhtml:body")
-        	.html(data[1][0].sourceNote);
-        	
-        	//Adds Country Titles
-        	info.append("text")
-        	.attr("class", "title")
-        	.text("Country:")
-        	.attr({
-    			"transform":"translate(0, 330)"
-			})
-			
-			//Add country info
+
+			/*//Add country name
         	info.append('foreignObject')
         	.attr('x', 0)
 			.attr('y', 340)
         	.attr("class", "small info")
+        	.attr('width', margin.screen-width-margin.text)
+			.attr('height', 20)
+        	.append("xhtml:div")
         	.attr("id", "cInfo")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:body")
-        	.html();
+        	.html();*/
         	
-        	//add country capital
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 360)
-        	.attr("class", "small info")
-        	.attr("id", "cap")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:body")
-        	.html();
-        	
-        	//add country region
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 380)
-        	.attr("class", "small info")
-        	.attr("id", "reg")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:body")
-        	.html();
-        	
-        	//add country income
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 400)
-        	.attr("class", "small info")
-        	.attr("id", "inco")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:body")
-        	.html();
-        	
-        	//add country lending
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 420)
-        	.attr("class", "small info")
-        	.attr("id", "lend")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:body")
-        	.html();
-			
-			//add country lat
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 440)
-        	.attr("class", "small info")
-        	.attr("id", "lat")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:body")
-        	.html();
-        	
-        	//add country long
-			info.append('foreignObject')
-        	.attr('x', 0)
-			.attr('y', 460)
-        	.attr("class", "small info")
-        	.attr("id", "lon")
-        	.attr('width', margin.screen-width-margin.text)
-			.attr('height', 20)
-        	.append("xhtml:body")
-        	.html();
 			
 			
         }
@@ -431,6 +468,8 @@ var initVis = function(error, indicators, world, countries){
        			date = $("#selectY").val();
 				//console.log("Change "+date);
 				d3.selectAll(".clicked").classed({'clicked': false});
+				d3.selectAll(".country").html("");
+				d3.selectAll(".source").html("");
 				runAQueryOn();
        	});
        	
@@ -459,7 +498,7 @@ var initVis = function(error, indicators, world, countries){
   .on("click", function(d, i){
   	d3.selectAll(".clicked").classed({'clicked': false});
   //var k = $( this ).css( "fill" );
-  //d3.selectAll(".clicked").attr("fill", k);
+  d3.selectAll(".country").html("");
   	
   	d3.select(this).classed({'clicked': true});
   	//console.log(d.id);
