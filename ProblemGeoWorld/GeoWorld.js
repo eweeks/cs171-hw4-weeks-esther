@@ -480,6 +480,9 @@ var initVis = function(error, indicators, world, countries){
            	.append("option")
            	.text(function (d) { return d; })
        		.attr("value", function (d) { return d; });
+    //select values on load that have easy to view data   		
+    $('#selectY').val(2010);
+    $("#select").val("AG.LND.ARBL.HA.PC");
        		
     date = $( "#selectY" ).val();
     //console.log( $( "#selectY" ).val()); 
@@ -531,8 +534,6 @@ queue()
     .defer(d3.json,"../data/world_data.json")
     .defer(d3.json,"../data/WorldBankCountries2.json")
     .await(initVis);
-
-
 
 
 // just for fun 
