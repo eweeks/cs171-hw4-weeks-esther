@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>File for JSON Data</title>
 </head>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -14,37 +14,26 @@
 
 
 <script>
-//change/clean up when have clarification on data format to output, currently
-//not separating by month, only id.
+
 var reducedDataSet={ };
-var trail =[690150, 690230];
 
-    d3.json("../data/allData2003_2004.json",function(error,data){
-       
-       // var allDates = [];
-        var allTimes =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
-        var timeParser = d3.time.format("%b %_d, %Y %X %p");
-       var keys = Object.keys(data);
-      
-
+d3.json("../data/allData2003_2004.json",function(error,data){
+	var allTimes =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
+	var timeParser = d3.time.format("%b %_d, %Y %X %p");
+	var keys = Object.keys(data);
+	
+	keys.forEach(function(d, i){
+		reducedDataSet[d]={};
+		var sum =0;
+		data[d].map(function(e, j){
+			sum = sum+parseInt(e.value);
+			for(f=0; f<=23; f++){
+				if((timeParser.parse(e.date).getHours())==f){
+					var h = parseInt(allTimes[f])+parseInt(e.value);
+					allTimes[f] = h;
+				}
 		
-		
-		keys.forEach(function(d, i){
-		//trail.forEach(function(d, i){
-			//var d=690150;
-			reducedDataSet[d]={};
-			var sum =0;
-			data[d].map(function(e, j){
-				//use this with array for each month if need to separate that way..
-				//if(timeParser.parse(e.date).getMonth() == 1){
-					sum = sum+parseInt(e.value);
-					for(f=0; f<=23; f++){
-						if((timeParser.parse(e.date).getHours())==f){
-							var h = parseInt(allTimes[f])+parseInt(e.value);
-							allTimes[f] = h;
-						}
-						
-						reducedDataSet[d]=[{"id": d,"sum": sum,
+				reducedDataSet[d]=[{"id": d,"sum": sum,
 						"hourly":{ "01:00:00 AM": allTimes[1], "02:00:00 AM": allTimes[2],
 						"03:00:00 AM": allTimes[3], "04:00:00 AM": allTimes[4],
 						"05:00:00 AM": allTimes[5], "06:00:00 AM": allTimes[6],
@@ -57,43 +46,26 @@ var trail =[690150, 690230];
 						"19:00:00 PM": allTimes[19], "20:00:00 PM": allTimes[20], 
 						"21:00:00 PM": allTimes[21], "22:00:00 PM": allTimes[22],
 						"23:00:00 PM": allTimes[23], "00:00:00 AM": allTimes[0],}}];
-					}
-				//}
-       			
-       		
-       		//});
-			//console.log(allTimes);
-			});
-		});
-		
-		//console.log(reducedDataSet);
-	
-		saveToFile(reducedDataSet,"reducedMonthStationHour2003_2004.json");
-    });
+			}
 
-	
-	
-    var saveToFile = function(object, filename){
-    	//console.log(object);
-    	//var trail =[690150, 690230];
-    	var o = object;
-    	var k =object.sum;
-    	//var jsonString = object.toString();
-    	 var blob, blobText;
-    	 blobText=[];
-    	/*trail.forEach(function(d, i){
-    		//console.log(d)
-    		blobText.push(JSON.stringify(object[d], null, 2));
-    	});*/
-    	
-       
-       blobText = [JSON.stringify(object, null, 2)];
-       //console.log(blobText);
-        blob = new Blob(blobText, {
-            type: "text/plain;charset=utf-8"
-        });
-        saveAs(blob, filename);
-    }
+		});
+	});
+
+
+	saveToFile(reducedDataSet,"reducedMonthStationHour2003_2004.json");
+});
+
+var saveToFile = function(object, filename){
+	var o = object;
+	var k =object.sum;
+	var blob, blobText;
+	blobText=[];
+	blobText = [JSON.stringify(object, null, 2)];
+	blob = new Blob(blobText, {
+		type: "text/plain;charset=utf-8"
+	});
+	saveAs(blob, filename);
+}
 
 
 </script>
