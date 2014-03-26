@@ -193,10 +193,21 @@ info.append('foreignObject')
 	.append("xhtml:div")
 	.html();
 
-//add country capital
+//add current country value
 info.append('foreignObject')
 	.attr('x', 0)
 	.attr('y', 365)
+	.attr("class", "small info country")
+	.attr("id", "iValue")
+	.attr('width', margin.screen-width-margin.text)
+	.attr('height', 20)
+	.append("xhtml:div")
+	.html();
+
+//add country capital
+info.append('foreignObject')
+	.attr('x', 0)
+	.attr('y', 385)
 	.attr("class", "small info country")
 	.attr("id", "cap")
 	.attr('width', margin.screen-width-margin.text)
@@ -207,7 +218,7 @@ info.append('foreignObject')
 //add country region
 info.append('foreignObject')
 	.attr('x', 0)
-	.attr('y', 385)
+	.attr('y', 405)
 	.attr("class", "small info country")
 	.attr("id", "reg")
 	.attr('width', margin.screen-width-margin.text)
@@ -218,7 +229,7 @@ info.append('foreignObject')
 //add country income
 info.append('foreignObject')
 	.attr('x', 0)
-	.attr('y', 405)
+	.attr('y', 425)
 	.attr("class", "small info country")
 	.attr("id", "inco")
 	.attr('width', margin.screen-width-margin.text)
@@ -229,7 +240,7 @@ info.append('foreignObject')
 //add country lending
 info.append('foreignObject')
 	.attr('x', 0)
-	.attr('y', 425)
+	.attr('y', 445)
 	.attr("class", "small info country")
 	.attr("id", "lend")
 	.attr('width', margin.screen-width-margin.text)
@@ -240,7 +251,7 @@ info.append('foreignObject')
 //add country lat
 info.append('foreignObject')
 	.attr('x', 0)
-	.attr('y', 445)
+	.attr('y', 465)
 	.attr("class", "small info country")
 	.attr("id", "lat")
 	.attr('width', margin.screen-width-margin.text)
@@ -251,7 +262,7 @@ info.append('foreignObject')
 //add country long
 info.append('foreignObject')
 	.attr('x', 0)
-	.attr('y', 465)
+	.attr('y', 485)
 	.attr("class", "small info country")
 	.attr("id", "lon")
 	.attr('width', margin.screen-width-margin.text)
@@ -279,13 +290,11 @@ function runAQueryOn(indicatorString) {
 			data[1].map(function(d, i){
 				//maps to country info
 				c.map(function(e, j){
-					if(e !== null){
 						//if country id's match, set value and id
 						if(e.iso == d.country.id){
 							e.indicator.value=d.value;
 							e.indicator.id=d.indicator.id;
 						}
-					}
 				});
 			});
 			
@@ -347,9 +356,7 @@ function cColor(){
 				if(l.id == d.id){
 					var m = getMax();
 					var l = l.indicator.value;
-					if(l !== null){
 						r =color(m, l);
-					}
 				}
 			});
 			return r;
@@ -380,6 +387,8 @@ var initVis = function(error, indicators, world, countries){
 		.on("change", function(d){
 			call = $( "#select" ).val();
 			d3.selectAll(".clicked").classed({'clicked': false});
+			d3.selectAll(".country").html("");
+			d3.selectAll(".source").html("");
 			runAQueryOn();
 		});
 		
@@ -446,6 +455,7 @@ var initVis = function(error, indicators, world, countries){
 			c.map(function (e){
 				if(d.id == e.id){
 					d3.select("#cInfo").html(e.name);
+					d3.select("#iValue").html("Current Indicator Value: "+e.indicator.value);
 					d3.select("#cap").html("Capital: "+e.about.capital);
 					d3.select("#reg").html("Region: "+e.about.region);
 					d3.select("#inco").html("Income: "+e.about.income);
