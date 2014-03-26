@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>File to Save as JSON-for World Bank Data</title>
 </head>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -12,37 +12,23 @@
 
 <div id="vis"></div>
 
-
 <script>
-//change/clean up when have clarification on data format to output, currently
-//not separating by month, only id.
+
 var reducedDataSet=[];
-var trail =[690150, 690230];
 
 d3.json("../data/world_data.json",function(error, json){
-
-	console.log(json);
-	
-	/*json.features.map(function(d, i){
-		//console.log(d.id);
-	});*/
-
-    function Query() {
-    	$.ajax({
-        	url: "http://api.worldbank.org/countries/all?format=jsonP&prefix=Getdata&per_page=500&date=2000",
-        	jsonpCallback:'getdata',
-        	dataType:'jsonp',
-        	success: function (data, status){
-           		console.log(data);
-           		var c =0;
-           		data[1].map(function(d, i){
-           			//console.log(d.id);
-           			
-           			json.features.map(function(e, j){
-						//console.log(e.id);
+	function Query() {
+		$.ajax({
+			url: "http://api.worldbank.org/countries/all?format=jsonP&prefix=Getdata&per_page=500",
+			jsonpCallback:'getdata',
+			dataType:'jsonp',
+			success: function (data, status){
+				var c =0;
+				data[1].map(function(d, i){
+					json.features.map(function(e, j){
 						if(d.id == e.id){
-							//console.log("Match "+d.id+" "+e.id+" "+c);
-							reducedDataSet[c]={"id": e.id,"name": d.name,
+							reducedDataSet[c]={"id": e.id,
+							"name": d.name,
 							"iso":d.iso2Code,
 							"indicator":{ "id": 0, "value": 0 , },
 							"about":{"capital": d.capitalCity, "long": d.longitude,
@@ -51,48 +37,27 @@ d3.json("../data/world_data.json",function(error, json){
 							};
 							c=c+1;
 						}
-						
 					});
-           			
-           		});
-           		
-           		//should print if error?
-           		if(status != "success"){
-           			console.log("Error with country data");
-          	 	}
-				console.log(reducedDataSet);
+				});
 				saveToFile(reducedDataSet,"WorldBankCountries.json");
-        	}
-			
-    	});
-
-
+			}
+		});
 	}
-		
+	
 	Query();
-	
-	
-
 
 });
 
-	//Query();
-	
-    var saveToFile = function(object, filename){
-    	//console.log(object);
-    	 var blob, blobText;
-    	 //blobText=[];
-       blobText = [JSON.stringify(object, null, 2)];
-       //console.log(blobText);
-        blob = new Blob(blobText, {
-            type: "text/plain;charset=utf-8"
-        });
-        saveAs(blob, filename);
-    }
-
+var saveToFile = function(object, filename){
+	var blob, blobText;
+	blobText = [JSON.stringify(object, null, 2)];
+	blob = new Blob(blobText, {
+		type: "text/plain;charset=utf-8"
+	});
+	saveAs(blob, filename);
+}
 
 </script>
-
 
 </body>
 </html>

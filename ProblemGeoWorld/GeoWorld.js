@@ -472,7 +472,7 @@ var initVis = function(error, indicators, world, countries){
 queue()
 	.defer(d3.csv,"../data/worldBank_indicators.csv")
 	.defer(d3.json,"../data/world_data.json")
-	.defer(d3.json,"../data/WorldBankCountries2.json")
+	.defer(d3.json,"../data/WorldBankCountries.json")
 	.await(initVis);
 
 
